@@ -33,7 +33,7 @@ $ chmod +x /usr/local/bin/chromedriver
 ## Installation
 
 ```
-$ clone https://github.com/shimabox/sample-phpwebdriver.git
+$ git clone https://github.com/shimabox/sample-phpwebdriver.git
 $ cd sample-phpwebdriver
 $ composer install --dev
 ```
