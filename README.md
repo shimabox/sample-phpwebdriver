@@ -53,9 +53,55 @@ $ vendor/bin/phpunit
 $ sh kill_selenium.sh
 ```
 
+### windows(64bit) example
+
+- selenium-server-standalone
+  - v3.4.0
+  - [selenium-server-standalone-3.4.0.jar](http://selenium-release.storage.googleapis.com/3.4/selenium-server-standalone-3.4.0.jar)
+- geckodriver.exe
+  - v0.16.1
+  - [geckodriver-v0.16.1-win64.zip](https://github.com/mozilla/geckodriver/releases/download/v0.16.1/geckodriver-v0.16.1-win64.zip)
+    - and unzip
+- chromedriver.exe
+  - v2.30
+  - [chromedriver_win32.zip](https://chromedriver.storage.googleapis.com/2.30/chromedriver_win32.zip)
+    - and unzip
+- IEDriverServer.exe
+  - v3.4.0
+  - [IEDriverServer_x64_3.4.0.zip](http://selenium-release.storage.googleapis.com/3.4/IEDriverServer_x64_3.4.0.zip)
+    - and unzip
+
+```shell
+$ git clone https://github.com/shimabox/sample-phpwebdriver.git
+$ cd sample-phpwebdriver
+$ composer install --dev // or comoposer update
+$ cp .env.example .env
+```
+
+- Edit ```.env```
+```
+CHROME_DRIVER_PATH='your chromedriver.exe path'
+FIREFOX_DRIVER_PATH='your geckodriver.exe path'
+IE_DRIVER_PATH='your IEDriverServer.exe path'
+```
+
+#### run
+
+1. Open ```cmd``` etc.
+2. Run selenium-server-standalone
+```shell
+$ java -jar selenium-server-standalone-3.4.0.jar
+```
+3. Open a new ```cmd``` etc.
+4. Run example source
+```
+$ php sample/sample_4_win_64bit.php
+```
+
 ## See Also
 
 - [php-webdriverをmacのローカルで試す | Shimabox Blog](https://blog.shimabox.net/2017/04/30/try_php-webdriver_locally_on_mac/ "php-webdriverをmacのローカルで試す | Shimabox Blog")
+- [php-webdriverをWindowsのローカルで試す | Shimabox Blog](https://blog.shimabox.net/2017/06/09/try_php-webdriver_locally_on_windows "php-webdriverをWindowsのローカルで試す | Shimabox Blog")
 
 ## License
 
