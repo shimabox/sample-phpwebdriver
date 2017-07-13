@@ -24,7 +24,7 @@ class SampleTest extends Base
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
 
-        $this->takeScreenshot($driver, __METHOD__);
+        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome');
     }
 
     /**
@@ -57,7 +57,7 @@ class SampleTest extends Base
         // https://www.yahoo.co.jp/ にリダイレクトされていないこと
         $this->assertEquals('https://m.yahoo.co.jp/', $driver->getCurrentURL());
 
-        $this->takeScreenshot($driver, __METHOD__);
+        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome');
     }
 
     /**
@@ -74,7 +74,7 @@ class SampleTest extends Base
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
 
-        $this->takeScreenshot($driver, __METHOD__);
+        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox');
     }
 
     /**
@@ -107,6 +107,6 @@ class SampleTest extends Base
         // https://www.yahoo.co.jp/ にリダイレクトされていないこと
         $this->assertEquals('https://m.yahoo.co.jp/', $driver->getCurrentURL());
 
-        $this->takeScreenshot($driver, __METHOD__);
+        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox');
     }
 }
