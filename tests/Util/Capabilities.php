@@ -3,24 +3,17 @@
 namespace SMB\PhpWebDriver\Tests\Util;
 
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\Chrome;
 use Facebook\WebDriver\Firefox;
+
+use SMB\PhpWebDriver\Tests\Exception\NotExistsWebDriverException;
 
 /**
  * Capabilities
  */
 class Capabilities
 {
-    /**
-     * @var string
-     */
-    const CHROME = 'chrome';
-
-    /**
-     * @var string
-     */
-    const FIREFOX = 'firefox';
-
     /**
      * DesiredCapabilities
      * @var \Facebook\WebDriver\Remote\DesiredCapabilities
@@ -41,19 +34,44 @@ class Capabilities
 
     /**
      * コンストラクタ
-     * @param string $browser chrome or firefox
+     * @param string $browser chrome or ie or firefox
+     * @throws NotExistsWebDriverException
      */
     public function __construct($browser)
     {
         switch ($browser) {
-            case self::CHROME: // chrome
+            case WebDriverBrowserType::CHROME: // chrome
+                if ( ! getenv('CHROME_DRIVER_PATH')) {
+                    throw new NotExistsWebDriverException('not exists chrome webdriver');
+                }
+                
                 $this->capabilities = DesiredCapabilities::chrome();
                 $this->browser = $browser;
+
+                putenv('webdriver.chrome.driver=' . getenv('CHROME_DRIVER_PATH'));
+
                 break;
-            case self::FIREFOX: // firefox
+            case WebDriverBrowserType::IE: // internet explorer
+                if ( ! getenv('IE_DRIVER_PATH')) {
+                    throw new NotExistsWebDriverException('not exists ie webdriver');
+                }
+                
+                $this->capabilities = DesiredCapabilities::internetExplorer();
+                $this->browser = $browser;
+                
+                putenv('webdriver.ie.driver=' . getenv('IE_DRIVER_PATH'));
+
+                break;
+            case WebDriverBrowserType::FIREFOX: // firefox
             default :
+                if ( ! getenv('FIREFOX_DRIVER_PATH')) {
+                    throw new NotExistsWebDriverException('not exists firefox webdriver');
+                }
                 $this->capabilities = DesiredCapabilities::firefox();
-                $this->browser = self::FIREFOX;
+                $this->browser = WebDriverBrowserType::FIREFOX;
+
+                putenv('webdriver.firefox.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+
                 break;
         }
     }
@@ -91,12 +109,12 @@ class Capabilities
     protected function settingUserAgent($ua)
     {
         switch ($this->browser) {
-            case self::CHROME:
+            case WebDriverBrowserType::CHROME:
                 $options = new Chrome\ChromeOptions();
                 $options->addArguments(['--user-agent=' . $ua]);
                 $this->capabilities->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
                 break;
-            case self::FIREFOX:
+            case WebDriverBrowserType::FIREFOX:
                 $profile = new Firefox\FirefoxProfile();
                 $profile->setPreference('general.useragent.override', $ua);
                 $this->capabilities->setCapability(Firefox\FirefoxDriver::PROFILE, $profile);

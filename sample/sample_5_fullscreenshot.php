@@ -1,0 +1,126 @@
+<?php
+
+require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
+
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\WebDriverExpectedCondition;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverDimension;
+use Facebook\WebDriver\Chrome;
+use Facebook\WebDriver\Firefox;
+
+use SMB\PhpWebDriver\Modules\Screenshot;
+
+/**
+ * selenium php-webdriver 全画面キャプチャのサンプル
+ * @param string $browser chrome or firefox or ie
+ * @param string $driverPath ドライバーのパス
+ * @param array $size ['w' => xxx, 'h' => xxx]
+ * @param string overrideUA true : override Useragent
+ */
+function sample_5($browser, $driverPath, array $size=[], $overrideUA = '')
+{
+    // selenium
+    $host = 'http://localhost:4444/wd/hub';
+
+    switch ($browser) {
+        case WebDriverBrowserType::CHROME :
+            $cap = DesiredCapabilities::chrome();
+
+            if ($overrideUA !== '') {
+                $options = new Chrome\ChromeOptions();
+                $options->addArguments(['--user-agent=' . $overrideUA]);
+
+                $cap->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
+            }
+
+            putenv('webdriver.chrome.driver=' . $driverPath);
+            $driver = RemoteWebDriver::create($host, $cap);
+            break;
+        case WebDriverBrowserType::FIREFOX :
+            $cap = DesiredCapabilities::firefox();
+
+            if ($overrideUA !== '') {
+                $profile = new Firefox\FirefoxProfile();
+                $profile->setPreference('general.useragent.override', $overrideUA);
+
+                $cap->setCapability(Firefox\FirefoxDriver::PROFILE, $profile);
+            }
+
+            putenv('webdriver.firefox.driver=' . $driverPath);
+            $driver = RemoteWebDriver::create($host, $cap);
+            break;
+        case WebDriverBrowserType::IE :
+            putenv('webdriver.ie.driver=' . $driverPath);
+            $driver = RemoteWebDriver::create($host, DesiredCapabilities::internetExplorer());
+            break;
+    }
+
+    // 画面サイズをMAXにする場合
+    // $driver->manage()->window()->maximize();
+
+    // 画面サイズの指定あり
+    if (isset($size['w']) && isset($size['h'])) {
+        $dimension = new WebDriverDimension($size['w'], $size['h']);
+        $driver->manage()->window()->setSize($dimension);
+    }
+
+    // 指定URLへ遷移 (Google)
+    $driver->get('https://www.google.co.jp/');
+
+    // 検索Box
+    $element = $driver->findElement(WebDriverBy::name('q'));
+    // 検索Boxにキーワードを入力して
+    $element->sendKeys('夏休みの予定');
+    // 検索実行
+    $element->submit();
+
+    // 検索結果画面のタイトルが '夏休みの予定 - Google 検索' になるまで10秒間待機する
+    // 指定したタイトルにならずに10秒以上経ったら
+    // 'Facebook\WebDriver\Exception\TimeOutException' がthrowされる
+    $driver->wait(10)->until(
+        WebDriverExpectedCondition::titleIs('夏休みの予定 - Google 検索')
+    );
+
+    // GWの予定 - Google 検索 というタイトルが取得できることを確認する
+    if ($driver->getTitle() !== '夏休みの予定 - Google 検索') {
+        throw new Exception('fail');
+    }
+
+    // キャプチャ
+    $fileName = $overrideUA === '' ? __METHOD__ . "_{$browser}.png" : __METHOD__ . "_override_ua_{$browser}.png";
+    $captureDirectoryPath = realpath(__DIR__ . '/../capture') . '/';
+
+    $screenshot = new Screenshot();
+    $screenshot->takeFull($driver, $captureDirectoryPath, $fileName, $browser);
+
+    // ブラウザを閉じる
+    $driver->close();
+}
+
+// iPhone6のサイズ
+$size4iPhone6 = ['w' => 375, 'h' => 667];
+
+// iOS10のUA
+$ua4iOS = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A403 Safari/602.1';
+
+/**
+ |------------------------------------------------------------------------------
+ | ドライバーのパスはお使いの環境(.env)に合わせてください
+ |------------------------------------------------------------------------------
+ */
+
+// chrome
+sample_5(WebDriverBrowserType::CHROME, getenv('CHROME_DRIVER_PATH'));
+sample_5(WebDriverBrowserType::CHROME, getenv('CHROME_DRIVER_PATH'), $size4iPhone6, $ua4iOS);
+
+// firefox
+sample_5(WebDriverBrowserType::FIREFOX, getenv('FIREFOX_DRIVER_PATH'));
+sample_5(WebDriverBrowserType::FIREFOX, getenv('FIREFOX_DRIVER_PATH'), $size4iPhone6, $ua4iOS);
+
+// ie
+if (getenv('IE_DRIVER_PATH') !== '') {
+    sample_5(WebDriverBrowserType::IE, getenv('IE_DRIVER_PATH'));
+}

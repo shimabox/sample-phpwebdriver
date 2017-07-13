@@ -5,7 +5,10 @@
         "vlucas/phpdotenv": "^2.4"
     },
     "autoload-dev": {
-        "psr-4": {"SMB\\PhpWebDriver\\Tests\\": "tests/"},
+        "psr-4": {
+            "SMB\\PhpWebDriver\\Tests\\": "tests/",
+            "SMB\\PhpWebDriver\\Modules\\": "modules/"
+        },
         "files": [
             "bootstrap.php"
         ]

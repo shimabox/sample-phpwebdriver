@@ -3,6 +3,8 @@
 namespace SMB\PhpWebDriver\Tests;
 
 use SMB\PhpWebDriver\Tests\Util\Capabilities;
+use SMB\PhpWebDriver\Tests\Exception\NotExistsWebDriverException;
+use SMB\PhpWebDriver\Modules\Screenshot;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
@@ -19,11 +21,17 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected $host = 'http://localhost:4444/wd/hub';
 
     /**
-     * DesiredCapabilities
-     * @var \Facebook\WebDriver\Remote\DesiredCapabilities
+     * Capabilities
+     * @var \Facebook\WebDriver\Remote\Desired\Capabilities
      */
     protected $capabilities;
-
+    
+    /**
+     * Screenshot
+     * @var \SMB\PhpWebDriver\Modules\Screenshot
+     */
+    protected $screenshot;
+    
     /**
      * RemoteWebDriver
      * @var \Facebook\WebDriver\Remote\RemoteWebDriver
@@ -37,6 +45,8 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
+        
+        $this->screenshot = new Screenshot();
     }
 
     /**
@@ -47,11 +57,19 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
 
+        $this->closeDriver();
+    }
+    
+    /**
+     * driver close
+     */
+    protected function closeDriver()
+    {
         if ($this->driver instanceof RemoteWebDriver) {
             $this->driver->close();
         }
     }
-
+    
     /**
      * RemoteWebDriver 生成
      * @param \SMB\PhpWebDriver\Tests\Util\Capabilities $cap
@@ -66,11 +84,11 @@ abstract class Base extends \PHPUnit_Framework_TestCase
             $cap = $this->createCapabilities();
         }
 
-        // ドライバーの起動
-        $driver = RemoteWebDriver::create($this->host, $cap->get());
+        /* @var \Facebook\WebDriver\Remote\Desired\Capabilities */
+        $this->capabilities = $cap->get();
 
-        // 画面サイズをMAXに
-        $driver->manage()->window()->maximize();
+        // ドライバーの起動
+        $driver = RemoteWebDriver::create($this->host, $this->capabilities);
 
         // サイズの指定があるか
         if ($dimension !== null) {
@@ -83,13 +101,27 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * DesiredCapabilities 生成
+     * 画面サイズをMAXに
+     * @param RemoteWebDriver $driver
+     */
+    protected function windowMaximize(RemoteWebDriver $driver)
+    {
+        $driver->manage()->window()->maximize();
+    }
+
+    /**
+     * Util\Capabilities 生成
      * @param string $browser chrome or firefox
-     * @return \Facebook\WebDriver\Remote\DesiredCapabilities
+     * @return \SMB\PhpWebDriver\Tests\Util\Capabilities
      */
     protected function createCapabilities($browser='')
     {
-        return new Capabilities($browser);
+        try {
+            return new Capabilities($browser);
+        } catch (NotExistsWebDriverException $e) {
+            // 対象のWebDriverが設定されていなければskipしておく
+            $this->markTestSkipped($e->getMessage());
+        }
     }
 
     /**
@@ -106,12 +138,26 @@ abstract class Base extends \PHPUnit_Framework_TestCase
      * スクリーンショット
      * @param RemoteWebDriver $driver
      * @param string $fileName Without extension
+     * @param int $sleep Sleep for seconds
      * @param string $dir capture以下に階層が必要だったら階層を追加
      */
-    protected function takeScreenshot(RemoteWebDriver $driver, $fileName, $dir='')
+    protected function takeScreenshot(RemoteWebDriver $driver, $fileName, $sleep=1, $dir='')
     {
         $path = $this->capturePath($dir);
-        $driver->takeScreenshot($path . $fileName .'.png');
+        $this->screenshot->take($driver, $path . $fileName.'.png', $sleep);
+    }
+
+    /**
+     * 全画面スクリーンショット
+     * @param RemoteWebDriver $driver
+     * @param string $fileName Without extension
+     * @param int $sleep Sleep for seconds
+     * @param string $dir capture以下に階層が必要だったら階層を追加
+     */
+    protected function takeFullScreenshot(RemoteWebDriver $driver, $fileName, $sleep=1, $dir='')
+    {
+        $path = $this->capturePath($dir);
+        $this->screenshot->takeFull($driver, $path, $fileName.'.png', $this->capabilities->getBrowserName(), $sleep);
     }
 
     /**
