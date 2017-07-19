@@ -25,13 +25,13 @@ abstract class Base extends \PHPUnit_Framework_TestCase
      * @var \Facebook\WebDriver\Remote\Desired\Capabilities
      */
     protected $capabilities;
-    
+
     /**
      * Screenshot
      * @var \SMB\PhpWebDriver\Modules\Screenshot
      */
     protected $screenshot;
-    
+
     /**
      * RemoteWebDriver
      * @var \Facebook\WebDriver\Remote\RemoteWebDriver
@@ -45,7 +45,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        
+
         $this->screenshot = new Screenshot();
     }
 
@@ -59,7 +59,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
 
         $this->closeDriver();
     }
-    
+
     /**
      * driver close
      */
@@ -69,7 +69,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
             $this->driver->close();
         }
     }
-    
+
     /**
      * RemoteWebDriver 生成
      * @param \SMB\PhpWebDriver\Tests\Util\Capabilities $cap
@@ -137,27 +137,27 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     /**
      * スクリーンショット
      * @param RemoteWebDriver $driver
-     * @param string $fileName Without extension
+     * @param string $filename Without extension
      * @param int $sleep Sleep for seconds
      * @param string $dir capture以下に階層が必要だったら階層を追加
      */
-    protected function takeScreenshot(RemoteWebDriver $driver, $fileName, $sleep=1, $dir='')
+    protected function takeScreenshot(RemoteWebDriver $driver, $filename, $sleep=1, $dir='')
     {
         $path = $this->capturePath($dir);
-        $this->screenshot->take($driver, $path . $fileName.'.png', $sleep);
+        $this->screenshot->take($driver, $path . $filename.'.png', $sleep);
     }
 
     /**
      * 全画面スクリーンショット
      * @param RemoteWebDriver $driver
-     * @param string $fileName Without extension
+     * @param string $filename Without extension
      * @param int $sleep Sleep for seconds
      * @param string $dir capture以下に階層が必要だったら階層を追加
      */
-    protected function takeFullScreenshot(RemoteWebDriver $driver, $fileName, $sleep=1, $dir='')
+    protected function takeFullScreenshot(RemoteWebDriver $driver, $filename, $sleep=1, $dir='')
     {
         $path = $this->capturePath($dir);
-        $this->screenshot->takeFull($driver, $path, $fileName.'.png', $this->capabilities->getBrowserName(), $sleep);
+        $this->screenshot->takeFull($driver, $path, $filename.'.png', $this->capabilities->getBrowserName(), $sleep);
     }
 
     /**
@@ -165,7 +165,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
      * @param string $dir capture以下の階層
      * @return string
      */
-    private function capturePath($dir='')
+    protected function capturePath($dir='')
     {
         $_dir = $dir === '' ? '' : trim($dir, '/') . '/';
         return realpath(__DIR__ . '/../capture') . '/' . $_dir;
