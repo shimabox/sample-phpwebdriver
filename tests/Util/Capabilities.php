@@ -44,7 +44,7 @@ class Capabilities
                 if ( ! getenv('CHROME_DRIVER_PATH')) {
                     throw new NotExistsWebDriverException('not exists chrome webdriver');
                 }
-                
+
                 $this->capabilities = DesiredCapabilities::chrome();
                 $this->browser = $browser;
 
@@ -55,18 +55,20 @@ class Capabilities
                 if ( ! getenv('IE_DRIVER_PATH')) {
                     throw new NotExistsWebDriverException('not exists ie webdriver');
                 }
-                
+
                 $this->capabilities = DesiredCapabilities::internetExplorer();
                 $this->browser = $browser;
-                
+
                 putenv('webdriver.ie.driver=' . getenv('IE_DRIVER_PATH'));
 
                 break;
             case WebDriverBrowserType::FIREFOX: // firefox
             default :
+
                 if ( ! getenv('FIREFOX_DRIVER_PATH')) {
                     throw new NotExistsWebDriverException('not exists firefox webdriver');
                 }
+
                 $this->capabilities = DesiredCapabilities::firefox();
                 $this->browser = WebDriverBrowserType::FIREFOX;
 
