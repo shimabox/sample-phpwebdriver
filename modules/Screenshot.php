@@ -65,11 +65,11 @@ class Screenshot
         // ページの左上までスクロール
         $driver->executeScript("window.scrollTo(0, 0);");
 
-        // コンテンツサイズ取得
+        // 実際のコンテンツサイズを取得
         $contentsWidth = $driver->executeScript("return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);");
         $contentsHeight = $driver->executeScript("return Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);");
 
-        // 画面サイズ取得
+        // 現在表示されている画面のサイズを取得
         $viewWidth = $driver->executeScript("return window.innerWidth;");
         $viewHeight = $driver->executeScript("return window.innerHeight;");
 
@@ -84,6 +84,7 @@ class Screenshot
         $rowCount = 0;
 
         // 縦スクロールの処理
+        // コンテンツの縦幅を超えるまで現在見えている画面の縦幅サイズずつスクロールさせる
         while ($scrollHeight < $contentsHeight) {
 
             // 横分割数
@@ -94,6 +95,7 @@ class Screenshot
             $driver->executeScript(sprintf("window.scrollTo(%d, %d);", $scrollWidth, $scrollHeight));
 
             // 横スクロールの処理
+            // コンテンツの横幅を超えるまで現在見えている画面の横幅サイズずつスクロールさせる
             while ($scrollWidth < $contentsWidth) {
 
                 if ($colCount > 0) {
@@ -110,41 +112,53 @@ class Screenshot
                 // 貼り付け元画像を作成
                 $src = imagecreatefrompng($tmpFile);
 
-                // 右端か下端に到達したら画像を切り取ってimgFrameに貼り付ける
-                if (
-                    $this->isOverContentsWidth($scrollWidth, $viewWidth, $contentsWidth)
-                    || $this->isOverContentsHeight($scrollHeight, $viewHeight, $contentsHeight)
-                ) {
+                // スクロール済の画面幅 + 現在表示中の幅 がコンテンツの右端(幅)に到達したか
+                $reachedContentsWidth = $this->toReachContentsWidth(($scrollWidth + $viewWidth), $contentsWidth);
+                // スクロール済の画面高さ + 現在表示中の高さ がコンテンツの下端(高さ)に到達したか
+                $reachedContentsHeight = $this->toReachContentsHeight(($scrollHeight + $viewHeight), $contentsHeight);
+
+                // スクロール量がコンテンツの右端か下端に到達したら画像を切り取ってimgFrameに貼り付ける
+                if ($reachedContentsWidth || $reachedContentsHeight) {
+
                     $newWidth = $viewWidth;
-                    $newHeight= $viewHeight;
+                    $newHeight = $viewHeight;
 
                     $srcX = 0;
                     $srcY = 0;
 
-                    // 右端に到達
-                    if ($this->isOverContentsWidth($scrollWidth, $viewWidth, $contentsWidth)) {
+                    // スクロール済の画面幅 + 現在表示中の幅 がコンテンツの幅に到達
+                    if ($reachedContentsWidth) {
+                        // キャプチャに足りない部分の横幅を求める
                         $newWidth = $contentsWidth - $scrollWidth;
+                        // 現在表示されている範囲のキャプチャから切り取る範囲のx座標を求める
                         $srcX = $viewWidth - $newWidth;
                     }
 
-                    // 下端に到達
-                    if ($this->isOverContentsHeight($scrollHeight, $viewHeight, $contentsHeight)) {
+                    // スクロール済の画面高さ + 現在表示中の高さ がコンテンツの高さに到達
+                    if ($reachedContentsHeight) {
+                        // キャプチャに足りない部分の縦幅を求める
                         $newHeight = $contentsHeight - $scrollHeight;
+                        // 現在表示されている範囲のキャプチャから切り取る範囲のy座標を求める
                         $srcY = $viewHeight - $newHeight;
+                        // 高さが超えている間は横にスクロールさせる
                         $colCount += 1;
                     }
 
+                    // 現在表示されている範囲のキャプチャから指定した範囲で切り取った画像を
+                    // imgFrameに貼り付ける
                     $this->toPatchTheImage($tmpFile, $captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, $srcX, $srcY, $newWidth, $newHeight);
 
                     $scrollWidth += $newWidth;
 
-                } else { // 普通に貼り付ける
-
-                    $this->toPatchTheImage($tmpFile, $captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, 0, 0, $viewWidth, $viewHeight);
-
-                    $scrollWidth += $viewWidth;
-                    $colCount += 1;
+                    continue;
                 }
+
+                // 右端か下端に到達していない限り現在表示されている範囲のキャプチャは
+                // そのままimgFrameに貼り付ける
+                $this->toPatchTheImage($tmpFile, $captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, 0, 0, $viewWidth, $viewHeight);
+
+                $scrollWidth += $viewWidth;
+                $colCount += 1;
             }
 
             $scrollHeight += $viewHeight;
@@ -157,27 +171,25 @@ class Screenshot
     }
 
     /**
-     * スクロール済の画面幅 + 現在表示中の幅 がコンテンツの幅を超えたかどうか
-     * @param int $scrollWidth   現在スクロール済みの幅
-     * @param int $viewWidth     現在表示中の幅
+     * スクロール済の画面幅 + 現在表示中の幅 がコンテンツの右端(幅)に到達したか
+     * @param int $targetWidth   スクロール済の画面幅 + 現在表示中の画面幅
      * @param int $contentsWidth コンテンツの幅
      * @return boolean
      */
-    private function isOverContentsWidth($scrollWidth, $viewWidth, $contentsWidth)
+    private function toReachContentsWidth($targetWidth, $contentsWidth)
     {
-        return ($scrollWidth + $viewWidth) >= $contentsWidth;
+        return $targetWidth >= $contentsWidth;
     }
 
     /**
-     * スクロール済の画面高さ + 現在表示中の高さ がコンテンツの高さを超えたかどうか
-     * @param int $scrollHeight   現在スクロール済みの高さ
-     * @param int $viewHeight     現在表示中の高さ
+     * スクロール済の画面高さ + 現在表示中の高さ がコンテンツの下端(高さ)に到達したか
+     * @param int $targetHeight   スクロール済の画面高さ + 現在表示中の画面高さ
      * @param int $contentsHeight コンテンツの高さ
      * @return boolean
      */
-    private function isOverContentsHeight($scrollHeight, $viewHeight, $contentsHeight)
+    private function toReachContentsHeight($targetHeight, $contentsHeight)
     {
-        return ($scrollHeight + $viewHeight) >= $contentsHeight;
+        return $targetHeight >= $contentsHeight;
     }
 
     /**
