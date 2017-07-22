@@ -29,7 +29,7 @@ class SampleTest extends Base
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome');
 
         // 全画面キャプチャ
-        $this->takeFullScreenshot($driver, 'full_it_can_access_to_yahoo_of_pc_chrome');
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome_fullscreen');
     }
 
     /**
@@ -64,7 +64,7 @@ class SampleTest extends Base
 
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome');
 
-        $this->takeFullScreenshot($driver, 'full_it_can_access_to_yahoo_of_sp_chrome');
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome_fullscreen');
     }
 
     /**
@@ -87,7 +87,7 @@ class SampleTest extends Base
 
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox');
 
-        $this->takeFullScreenshot($driver, 'full_it_can_access_to_yahoo_of_pc_firefox');
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox_fullscreen');
     }
 
     /**
@@ -122,7 +122,7 @@ class SampleTest extends Base
 
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox');
 
-        $this->takeFullScreenshot($driver, 'full_it_can_access_to_yahoo_of_sp_firefox');
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox_fullscreen');
     }
 
     /**
@@ -142,6 +142,6 @@ class SampleTest extends Base
         // IEは $driver->takeScreenshot($filename); で全画面キャプチャをとってくれる
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie');
 
-        $this->takeFullScreenshot($driver, 'full_it_can_access_to_yahoo_of_sp_ie');
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie_fullscreen');
     }
 }
