@@ -76,6 +76,10 @@ class Screenshot
         // 画像枠 この枠に対して切り取った画像を継ぎ接ぎしていく
         $imgFrame = imagecreatetruecolor($contentsWidth, $contentsHeight);
 
+        // Macだと画像を継ぎ足した部分の隅(右下)が若干粗くなる(黒ずむ)ので透過にして少しごまかす
+        imagealphablending($imgFrame, false);
+        imagesavealpha($imgFrame, true);
+
         // スクロール操作用
         $scrollWidth = 0;
         $scrollHeight = 0;
@@ -104,7 +108,7 @@ class Screenshot
                 }
 
                 // 現在表示されている範囲のキャプチャをとる
-                $tmpFile = $filepath . sprintf($browser . '_tmp_%d_%d_', $rowCount, $colCount) . time() . '.png';
+                $tmpFile = $filepath . sprintf($browser . '_tmp_%d_%d_', $rowCount, $colCount) . '_' . time() . '.png';
                 $driver->takeScreenshot($tmpFile);
 
                 $this->throwExceptionIfNotExistsFile($tmpFile, 'Could not save tmp screenshot');
