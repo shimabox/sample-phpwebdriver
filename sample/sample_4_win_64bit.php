@@ -12,24 +12,20 @@ use Facebook\WebDriver\WebDriverDimension;
  * selenium php-webdriver 実行のサンプル(Windows64bit)
  * @param string $browser chrome or firefox or ie
  * @param array $size ['w' => xxx, 'h' => xxx]
- * @param string $driverPath ドライバーのパス
  */
-function sample_4 ($browser, array $size, $driverPath)
+function sample_4 ($browser, array $size)
 {
     // selenium
     $host = 'http://localhost:4444/wd/hub';
 
     switch ($browser) {
         case 'chrome': // chrome ドライバーの起動
-            putenv('webdriver.chrome.driver=' . $driverPath);
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
             break;
         case 'firefox': // firefox ドライバーの起動
-            putenv('webdriver.firefox.driver=' . $driverPath);
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
             break;
         case 'ie': // internetExplorer ドライバーの起動
-            putenv('webdriver.ie.driver=' . $driverPath);
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::internetExplorer());
             break;
     }
@@ -78,15 +74,21 @@ $size4iPhone6 = ['w' => 375, 'h' => 667];
 
 /**
  |------------------------------------------------------------------------------
- | ドライバーのパスはお使いの環境(.env)に合わせてください
+ | 有効にしたいドライバーの値を true にしてください
  |------------------------------------------------------------------------------
  */
 
 // chrome
-sample_4('chrome', $size4iPhone6, getenv('CHROME_DRIVER_PATH'));
+if (getenv('ENABLED_CHROME_DRIVER') === 'true') {
+    sample_4('chrome', $size4iPhone6);
+}
 
 // firefox
-sample_4('firefox', $size4iPhone6, getenv('FIREFOX_DRIVER_PATH'));
+if (getenv('ENABLED_FIREFOX_DRIVER') === 'true') {
+    sample_4('firefox', $size4iPhone6);
+}
 
 // ie
-sample_4('ie', $size4iPhone6, getenv('IE_DRIVER_PATH'));
+if (getenv('ENABLED_IE_DRIVER') === 'true') {
+    sample_4('ie', $size4iPhone6);
+}

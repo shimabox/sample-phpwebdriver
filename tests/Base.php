@@ -3,6 +3,8 @@
 namespace SMB\PhpWebDriver\Tests;
 
 use SMB\PhpWebDriver\Tests\Util\Capabilities;
+use SMB\PhpWebDriver\Tests\Exception\DisabledWebDriverException;
+use SMB\PhpWebDriver\Modules\Screenshot;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
@@ -19,10 +21,16 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected $host = 'http://localhost:4444/wd/hub';
 
     /**
-     * DesiredCapabilities
-     * @var \Facebook\WebDriver\Remote\DesiredCapabilities
+     * Capabilities
+     * @var \Facebook\WebDriver\Remote\Desired\Capabilities
      */
     protected $capabilities;
+
+    /**
+     * Screenshot
+     * @var \SMB\PhpWebDriver\Modules\Screenshot
+     */
+    protected $screenshot;
 
     /**
      * RemoteWebDriver
@@ -37,6 +45,8 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
+
+        $this->screenshot = new Screenshot();
     }
 
     /**
@@ -47,6 +57,14 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
 
+        $this->closeDriver();
+    }
+
+    /**
+     * driver close
+     */
+    protected function closeDriver()
+    {
         if ($this->driver instanceof RemoteWebDriver) {
             $this->driver->close();
         }
@@ -66,11 +84,11 @@ abstract class Base extends \PHPUnit_Framework_TestCase
             $cap = $this->createCapabilities();
         }
 
-        // ドライバーの起動
-        $driver = RemoteWebDriver::create($this->host, $cap->get());
+        /* @var \Facebook\WebDriver\Remote\Desired\Capabilities */
+        $this->capabilities = $cap->get();
 
-        // 画面サイズをMAXに
-        $driver->manage()->window()->maximize();
+        // ドライバーの起動
+        $driver = RemoteWebDriver::create($this->host, $this->capabilities);
 
         // サイズの指定があるか
         if ($dimension !== null) {
@@ -83,13 +101,27 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * DesiredCapabilities 生成
+     * 画面サイズをMAXに
+     * @param RemoteWebDriver $driver
+     */
+    protected function windowMaximize(RemoteWebDriver $driver)
+    {
+        $driver->manage()->window()->maximize();
+    }
+
+    /**
+     * Util\Capabilities 生成
      * @param string $browser chrome or firefox
-     * @return \Facebook\WebDriver\Remote\DesiredCapabilities
+     * @return \SMB\PhpWebDriver\Tests\Util\Capabilities
      */
     protected function createCapabilities($browser='')
     {
-        return new Capabilities($browser);
+        try {
+            return new Capabilities($browser);
+        } catch (DisabledWebDriverException $e) {
+            // 対象のWebDriverが設定されていなければskipしておく
+            $this->markTestSkipped($e->getMessage());
+        }
     }
 
     /**
@@ -105,13 +137,27 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     /**
      * スクリーンショット
      * @param RemoteWebDriver $driver
-     * @param string $fileName Without extension
+     * @param string $filename Without extension
+     * @param int $sleep Sleep for seconds
      * @param string $dir capture以下に階層が必要だったら階層を追加
      */
-    protected function takeScreenshot(RemoteWebDriver $driver, $fileName, $dir='')
+    protected function takeScreenshot(RemoteWebDriver $driver, $filename, $sleep=1, $dir='')
     {
         $path = $this->capturePath($dir);
-        $driver->takeScreenshot($path . $fileName .'.png');
+        $this->screenshot->take($driver, $path . $filename.'.png', $sleep);
+    }
+
+    /**
+     * 全画面スクリーンショット
+     * @param RemoteWebDriver $driver
+     * @param string $filename Without extension
+     * @param int $sleep Sleep for seconds
+     * @param string $dir capture以下に階層が必要だったら階層を追加
+     */
+    protected function takeFullScreenshot(RemoteWebDriver $driver, $filename, $sleep=1, $dir='')
+    {
+        $path = $this->capturePath($dir);
+        $this->screenshot->takeFull($driver, $path, $filename.'.png', $this->capabilities->getBrowserName(), $sleep);
     }
 
     /**
@@ -119,7 +165,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
      * @param string $dir capture以下の階層
      * @return string
      */
-    private function capturePath($dir='')
+    protected function capturePath($dir='')
     {
         $_dir = $dir === '' ? '' : trim($dir, '/') . '/';
         return realpath(__DIR__ . '/../capture') . '/' . $_dir;

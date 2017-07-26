@@ -4,6 +4,7 @@ namespace SMB\PhpWebDriver\Tests;
 
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 
 /**
  * phpwebdriverを使ったテストの簡単なサンプルです
@@ -17,14 +18,18 @@ class SampleTest extends Base
      */
     public function it_can_access_to_yahoo_of_pc_chrome()
     {
-        $cap = new Util\Capabilities(Util\Capabilities::CHROME);
+        $cap = $this->createCapabilities(WebDriverBrowserType::CHROME);
 
         $driver = $this->createDriver($cap);
         $driver->get('https://www.yahoo.co.jp/');
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
 
+        // $driver->takeScreenshot($filename);
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome');
+
+        // 全画面キャプチャ
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome_fullscreen');
     }
 
     /**
@@ -34,7 +39,7 @@ class SampleTest extends Base
      */
     public function it_can_access_to_yahoo_of_sp_chrome()
     {
-        $cap = new Util\Capabilities(Util\Capabilities::CHROME);
+        $cap = $this->createCapabilities(WebDriverBrowserType::CHROME);
         $cap->settingDefaultUserAgent();
 
         $dimension = $this->createDimension(['w' => 375, 'h' => 667]);
@@ -58,6 +63,8 @@ class SampleTest extends Base
         $this->assertEquals('https://m.yahoo.co.jp/', $driver->getCurrentURL());
 
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome');
+
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome_fullscreen');
     }
 
     /**
@@ -67,14 +74,20 @@ class SampleTest extends Base
      */
     public function it_can_access_to_yahoo_of_pc_firefox()
     {
-        $cap = new Util\Capabilities(Util\Capabilities::FIREFOX);
+        $cap = $this->createCapabilities(WebDriverBrowserType::FIREFOX);
 
         $driver = $this->createDriver($cap);
+
+        // 画面サイズをMAXにする場合
+        $this->windowMaximize($driver);
+
         $driver->get('https://www.yahoo.co.jp/');
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
 
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox');
+
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox_fullscreen');
     }
 
     /**
@@ -84,7 +97,7 @@ class SampleTest extends Base
      */
     public function it_can_access_to_yahoo_of_sp_firefox()
     {
-        $cap = new Util\Capabilities(Util\Capabilities::FIREFOX);
+        $cap = $this->createCapabilities(WebDriverBrowserType::FIREFOX);
         $cap->settingDefaultUserAgent();
 
         $dimension = $this->createDimension(['w' => 375, 'h' => 667]);
@@ -108,5 +121,27 @@ class SampleTest extends Base
         $this->assertEquals('https://m.yahoo.co.jp/', $driver->getCurrentURL());
 
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox');
+
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox_fullscreen');
+    }
+
+    /**
+     * Yahoo(PC:internet explorer)トップページにアクセスできる
+     * @test
+     * @group ie
+     */
+    public function it_can_access_to_yahoo_of_pc_ie()
+    {
+        $cap = $this->createCapabilities(WebDriverBrowserType::IE);
+
+        $driver = $this->createDriver($cap);
+        $driver->get('https://www.yahoo.co.jp/');
+
+        $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
+
+        // IEは $driver->takeScreenshot($filename); で全画面キャプチャをとってくれる
+        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie');
+
+        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie_fullscreen');
     }
 }

@@ -3,24 +3,17 @@
 namespace SMB\PhpWebDriver\Tests\Util;
 
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\Chrome;
 use Facebook\WebDriver\Firefox;
+
+use SMB\PhpWebDriver\Tests\Exception\DisabledWebDriverException;
 
 /**
  * Capabilities
  */
 class Capabilities
 {
-    /**
-     * @var string
-     */
-    const CHROME = 'chrome';
-
-    /**
-     * @var string
-     */
-    const FIREFOX = 'firefox';
-
     /**
      * DesiredCapabilities
      * @var \Facebook\WebDriver\Remote\DesiredCapabilities
@@ -41,19 +34,33 @@ class Capabilities
 
     /**
      * コンストラクタ
-     * @param string $browser chrome or firefox
+     * @param string $browser chrome or ie or firefox
+     * @throws DisabledWebDriverException
      */
     public function __construct($browser)
     {
         switch ($browser) {
-            case self::CHROME: // chrome
+            case WebDriverBrowserType::CHROME: // chrome
+                if (getenv('ENABLED_CHROME_DRIVER') !== 'true') {
+                    throw new DisabledWebDriverException('Disabled chrome webdriver');
+                }
                 $this->capabilities = DesiredCapabilities::chrome();
                 $this->browser = $browser;
                 break;
-            case self::FIREFOX: // firefox
+            case WebDriverBrowserType::IE: // internet explorer
+                if (getenv('ENABLED_IE_DRIVER') !== 'true') {
+                    throw new DisabledWebDriverException('Disabled ie webdriver');
+                }
+                $this->capabilities = DesiredCapabilities::internetExplorer();
+                $this->browser = $browser;
+                break;
+            case WebDriverBrowserType::FIREFOX: // firefox
             default :
+                if (getenv('ENABLED_FIREFOX_DRIVER') !== 'true') {
+                    throw new DisabledWebDriverException('Disabled firefox webdriver');
+                }
                 $this->capabilities = DesiredCapabilities::firefox();
-                $this->browser = self::FIREFOX;
+                $this->browser = WebDriverBrowserType::FIREFOX;
                 break;
         }
     }
@@ -91,12 +98,12 @@ class Capabilities
     protected function settingUserAgent($ua)
     {
         switch ($this->browser) {
-            case self::CHROME:
+            case WebDriverBrowserType::CHROME:
                 $options = new Chrome\ChromeOptions();
                 $options->addArguments(['--user-agent=' . $ua]);
                 $this->capabilities->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
                 break;
-            case self::FIREFOX:
+            case WebDriverBrowserType::FIREFOX:
                 $profile = new Firefox\FirefoxProfile();
                 $profile->setPreference('general.useragent.override', $ua);
                 $this->capabilities->setCapability(Firefox\FirefoxDriver::PROFILE, $profile);
