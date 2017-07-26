@@ -104,7 +104,7 @@ class Screenshot
                 }
 
                 // 現在表示されている範囲のキャプチャをとる
-                $tmpFile = $filepath . sprintf($browser . '_tmp_%d_%d_', $rowCount, $colCount) . '_' . time() . '.png';
+                $tmpFile = $filepath . sprintf($browser . '_tmp_%d_%d_', $rowCount, $colCount) . time() . '.png';
                 $driver->takeScreenshot($tmpFile);
 
                 $this->throwExceptionIfNotExistsFile($tmpFile, 'Could not save tmp screenshot');
