@@ -72,7 +72,7 @@ class Capabilities
                 $this->capabilities = DesiredCapabilities::firefox();
                 $this->browser = WebDriverBrowserType::FIREFOX;
 
-                putenv('webdriver.firefox.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+                putenv('webdriver.gecko.driver=' . getenv('FIREFOX_DRIVER_PATH'));
 
                 break;
         }
