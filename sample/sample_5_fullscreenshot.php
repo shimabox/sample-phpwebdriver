@@ -16,11 +16,10 @@ use SMB\PhpWebDriver\Modules\Screenshot;
 /**
  * selenium php-webdriver 全画面キャプチャのサンプル
  * @param string $browser chrome or firefox or ie
- * @param string $driverPath ドライバーのパス
  * @param array $size ['w' => xxx, 'h' => xxx]
  * @param string overrideUA true : override Useragent
  */
-function sample_5($browser, $driverPath, array $size=[], $overrideUA = '')
+function sample_5($browser, array $size=[], $overrideUA = '')
 {
     // selenium
     $host = 'http://localhost:4444/wd/hub';
@@ -36,8 +35,8 @@ function sample_5($browser, $driverPath, array $size=[], $overrideUA = '')
                 $cap->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
             }
 
-            putenv('webdriver.chrome.driver=' . $driverPath);
             $driver = RemoteWebDriver::create($host, $cap);
+
             break;
         case WebDriverBrowserType::FIREFOX :
             $cap = DesiredCapabilities::firefox();
@@ -49,11 +48,10 @@ function sample_5($browser, $driverPath, array $size=[], $overrideUA = '')
                 $cap->setCapability(Firefox\FirefoxDriver::PROFILE, $profile);
             }
 
-            putenv('webdriver.firefox.driver=' . $driverPath);
             $driver = RemoteWebDriver::create($host, $cap);
+
             break;
         case WebDriverBrowserType::IE :
-            putenv('webdriver.ie.driver=' . $driverPath);
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::internetExplorer());
             break;
     }
@@ -108,19 +106,23 @@ $ua4iOS = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_1 like Mac OS X) AppleWebKit/
 
 /**
  |------------------------------------------------------------------------------
- | ドライバーのパスはお使いの環境(.env)に合わせてください
+ | 有効にしたいドライバーの値を true にしてください
  |------------------------------------------------------------------------------
  */
 
 // chrome
-sample_5(WebDriverBrowserType::CHROME, getenv('CHROME_DRIVER_PATH'));
-sample_5(WebDriverBrowserType::CHROME, getenv('CHROME_DRIVER_PATH'), $size4iPhone6, $ua4iOS);
+if (getenv('ENABLED_CHROME_DRIVER') === 'true') {
+    sample_5(WebDriverBrowserType::CHROME);
+    sample_5(WebDriverBrowserType::CHROME, $size4iPhone6, $ua4iOS);
+}
 
 // firefox
-sample_5(WebDriverBrowserType::FIREFOX, getenv('FIREFOX_DRIVER_PATH'));
-sample_5(WebDriverBrowserType::FIREFOX, getenv('FIREFOX_DRIVER_PATH'), $size4iPhone6, $ua4iOS);
+if (getenv('ENABLED_FIREFOX_DRIVER') === 'true') {
+    sample_5(WebDriverBrowserType::FIREFOX);
+    sample_5(WebDriverBrowserType::FIREFOX, $size4iPhone6, $ua4iOS);
+}
 
 // ie
-if (getenv('IE_DRIVER_PATH') !== '') {
-    sample_5(WebDriverBrowserType::IE, getenv('IE_DRIVER_PATH'));
+if (getenv('ENABLED_IE_DRIVER') === 'true') {
+    sample_5(WebDriverBrowserType::IE);
 }

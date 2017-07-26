@@ -3,7 +3,7 @@
 namespace SMB\PhpWebDriver\Tests;
 
 use SMB\PhpWebDriver\Tests\Util\Capabilities;
-use SMB\PhpWebDriver\Tests\Exception\NotExistsWebDriverException;
+use SMB\PhpWebDriver\Tests\Exception\DisabledWebDriverException;
 use SMB\PhpWebDriver\Modules\Screenshot;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -118,7 +118,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     {
         try {
             return new Capabilities($browser);
-        } catch (NotExistsWebDriverException $e) {
+        } catch (DisabledWebDriverException $e) {
             // 対象のWebDriverが設定されていなければskipしておく
             $this->markTestSkipped($e->getMessage());
         }
