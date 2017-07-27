@@ -4,6 +4,7 @@ require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension; // add
@@ -19,10 +20,10 @@ function sample_2 ($browser, array $size)
     $host = 'http://localhost:4444/wd/hub';
 
     switch ($browser) {
-        case 'chrome': // chrome ドライバーの起動
+        case WebDriverBrowserType::CHROME : // chrome ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
             break;
-        case 'firefox': // firefox ドライバーの起動
+        case WebDriverBrowserType::FIREFOX : // firefox ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
             break;
     }
@@ -70,7 +71,11 @@ function sample_2 ($browser, array $size)
 $size4iPhone6 = ['w' => 375, 'h' => 667];
 
 // chrome
-sample_2('chrome', $size4iPhone6);
+if (getenv('ENABLED_CHROME_DRIVER') === 'true') {
+    sample_2(WebDriverBrowserType::CHROME, $size4iPhone6);
+}
 
 // firefox
-sample_2('firefox', $size4iPhone6);
+if (getenv('ENABLED_FIREFOX_DRIVER') === 'true') {
+    sample_2(WebDriverBrowserType::FIREFOX, $size4iPhone6);
+}

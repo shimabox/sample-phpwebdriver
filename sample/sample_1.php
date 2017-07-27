@@ -4,6 +4,7 @@ require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 
@@ -17,10 +18,10 @@ function sample_1 ($browser)
     $host = 'http://localhost:4444/wd/hub';
 
     switch ($browser) {
-        case 'chrome': // chrome ドライバーの起動
+        case WebDriverBrowserType::CHROME : // chrome ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
             break;
-        case 'firefox': // firefox ドライバーの起動
+        case WebDriverBrowserType::FIREFOX : // firefox ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
             break;
     }
@@ -59,7 +60,11 @@ function sample_1 ($browser)
 }
 
 // chrome
-sample_1('chrome');
+if (getenv('ENABLED_CHROME_DRIVER') === 'true') {
+    sample_1(WebDriverBrowserType::CHROME);
+}
 
 // firefox
-sample_1('firefox');
+if (getenv('ENABLED_FIREFOX_DRIVER') === 'true') {
+    sample_1(WebDriverBrowserType::FIREFOX);
+}
