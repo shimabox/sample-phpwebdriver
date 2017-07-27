@@ -4,6 +4,7 @@ require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
@@ -22,7 +23,7 @@ function sample_3 ($browser, array $size = [], $overrideUA = '')
     $host = 'http://localhost:4444/wd/hub';
 
     switch ($browser) {
-        case 'chrome': // chrome
+        case WebDriverBrowserType::CHROME : // chrome
             $cap = DesiredCapabilities::chrome();
  
             if ($overrideUA === '') {
@@ -35,7 +36,7 @@ function sample_3 ($browser, array $size = [], $overrideUA = '')
             $cap->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
 
             break;
-        case 'firefox': // firefox
+        case WebDriverBrowserType::FIREFOX : // firefox
             $cap = DesiredCapabilities::firefox();
 
             if ($overrideUA === '') {
@@ -100,7 +101,11 @@ $size4iPhone6 = ['w' => 375, 'h' => 667];
 $ua4iOS = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A403 Safari/602.1';
 
 // chrome
-sample_3('chrome', $size4iPhone6, $ua4iOS);
+if (getenv('ENABLED_CHROME_DRIVER') === 'true') {
+    sample_3(WebDriverBrowserType::CHROME, $size4iPhone6, $ua4iOS);
+}
 
 // firefox
-sample_3('firefox', $size4iPhone6, $ua4iOS);
+if (getenv('ENABLED_FIREFOX_DRIVER') === 'true') {
+    sample_3(WebDriverBrowserType::FIREFOX, $size4iPhone6, $ua4iOS);
+}

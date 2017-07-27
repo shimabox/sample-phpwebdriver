@@ -4,6 +4,7 @@ require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
@@ -19,13 +20,13 @@ function sample_4 ($browser, array $size)
     $host = 'http://localhost:4444/wd/hub';
 
     switch ($browser) {
-        case 'chrome': // chrome ドライバーの起動
+        case WebDriverBrowserType::CHROME : // chrome ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
             break;
-        case 'firefox': // firefox ドライバーの起動
+        case WebDriverBrowserType::FIREFOX : // firefox ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
             break;
-        case 'ie': // internetExplorer ドライバーの起動
+        case WebDriverBrowserType::IE : // internet explorer ドライバーの起動
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::internetExplorer());
             break;
     }
@@ -80,15 +81,15 @@ $size4iPhone6 = ['w' => 375, 'h' => 667];
 
 // chrome
 if (getenv('ENABLED_CHROME_DRIVER') === 'true') {
-    sample_4('chrome', $size4iPhone6);
+    sample_4(WebDriverBrowserType::CHROME, $size4iPhone6);
 }
 
 // firefox
 if (getenv('ENABLED_FIREFOX_DRIVER') === 'true') {
-    sample_4('firefox', $size4iPhone6);
+    sample_4(WebDriverBrowserType::FIREFOX, $size4iPhone6);
 }
 
 // ie
 if (getenv('ENABLED_IE_DRIVER') === 'true') {
-    sample_4('ie', $size4iPhone6);
+    sample_4(WebDriverBrowserType::IE, $size4iPhone6);
 }
