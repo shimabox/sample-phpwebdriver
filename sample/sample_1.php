@@ -19,9 +19,15 @@ function sample_1 ($browser)
 
     switch ($browser) {
         case WebDriverBrowserType::CHROME : // chrome ドライバーの起動
+            if (getenv('CHROME_DRIVER_PATH') !== '') {
+                putenv('webdriver.chrome.driver=' . getenv('CHROME_DRIVER_PATH'));
+            }
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
             break;
         case WebDriverBrowserType::FIREFOX : // firefox ドライバーの起動
+            if (getenv('FIREFOX_DRIVER_PATH') !== '') {
+                putenv('webdriver.gecko.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+            }
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
             break;
     }

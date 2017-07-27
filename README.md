@@ -155,6 +155,12 @@ $ vendor/bin/phpunit
 ENABLED_CHROME_DRIVER=true
 ENABLED_FIREFOX_DRIVER=true
 ENABLED_IE_DRIVER=true
+// true to platform is windows
+IS_PLATFORM_WINDOWS=true
+// webdriver path for IE
+CHROME_DRIVER_PATH='your chromedriver.exe path'
+FIREFOX_DRIVER_PATH='your geckodriver.exe path'
+IE_DRIVER_PATH='your IEDriverServer.exe path'
 ```
 
 ### Run

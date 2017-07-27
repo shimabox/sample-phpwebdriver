@@ -35,6 +35,10 @@ function sample_5($browser, array $size=[], $overrideUA = '')
                 $cap->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
             }
 
+            if (getenv('CHROME_DRIVER_PATH') !== '') {
+                putenv('webdriver.chrome.driver=' . getenv('CHROME_DRIVER_PATH'));
+            }
+
             $driver = RemoteWebDriver::create($host, $cap);
 
             break;
@@ -48,10 +52,17 @@ function sample_5($browser, array $size=[], $overrideUA = '')
                 $cap->setCapability(Firefox\FirefoxDriver::PROFILE, $profile);
             }
 
+            if (getenv('FIREFOX_DRIVER_PATH') !== '') {
+                putenv('webdriver.gecko.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+            }
+
             $driver = RemoteWebDriver::create($host, $cap);
 
             break;
         case WebDriverBrowserType::IE :
+            if (getenv('IE_DRIVER_PATH') !== '') {
+                putenv('webdriver.ie.driver=' . getenv('IE_DRIVER_PATH'));
+            }
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::internetExplorer());
             break;
     }

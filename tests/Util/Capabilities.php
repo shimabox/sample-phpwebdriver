@@ -8,6 +8,7 @@ use Facebook\WebDriver\Chrome;
 use Facebook\WebDriver\Firefox;
 
 use SMB\PhpWebDriver\Tests\Exception\DisabledWebDriverException;
+use SMB\PhpWebDriver\Tests\Exception\NotExistsWebDriverException;
 
 /**
  * Capabilities
@@ -36,6 +37,7 @@ class Capabilities
      * コンストラクタ
      * @param string $browser chrome or ie or firefox
      * @throws DisabledWebDriverException
+     * @throws NotExistsWebDriverException
      */
     public function __construct($browser)
     {
@@ -44,6 +46,13 @@ class Capabilities
                 if (getenv('ENABLED_CHROME_DRIVER') !== 'true') {
                     throw new DisabledWebDriverException('Disabled chrome webdriver');
                 }
+
+                if (getenv('IS_PLATFORM_WINDOWS') === 'true' && getenv('CHROME_DRIVER_PATH') === '') {
+                    throw new NotExistsWebDriverException('not exists chrome webdriver');
+                } elseif (getenv('CHROME_DRIVER_PATH') !== '') {
+                    putenv('webdriver.chrome.driver=' . getenv('CHROME_DRIVER_PATH'));
+                }
+
                 $this->capabilities = DesiredCapabilities::chrome();
                 $this->browser = $browser;
                 break;
@@ -51,6 +60,13 @@ class Capabilities
                 if (getenv('ENABLED_IE_DRIVER') !== 'true') {
                     throw new DisabledWebDriverException('Disabled ie webdriver');
                 }
+
+                if (getenv('IS_PLATFORM_WINDOWS') === 'true' && getenv('IE_DRIVER_PATH') === '') {
+                    throw new NotExistsWebDriverException('not exists ie webdriver');
+                } elseif (getenv('IE_DRIVER_PATH') !== '') {
+                    putenv('webdriver.ie.driver=' . getenv('IE_DRIVER_PATH'));
+                }
+
                 $this->capabilities = DesiredCapabilities::internetExplorer();
                 $this->browser = $browser;
                 break;
@@ -59,6 +75,13 @@ class Capabilities
                 if (getenv('ENABLED_FIREFOX_DRIVER') !== 'true') {
                     throw new DisabledWebDriverException('Disabled firefox webdriver');
                 }
+
+                if (getenv('IS_PLATFORM_WINDOWS') === 'true' && getenv('FIREFOX_DRIVER_PATH') === '') {
+                    throw new NotExistsWebDriverException('not exists firefox webdriver');
+                } elseif (getenv('FIREFOX_DRIVER_PATH') !== '') {
+                    putenv('webdriver.gecko.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+                }
+
                 $this->capabilities = DesiredCapabilities::firefox();
                 $this->browser = WebDriverBrowserType::FIREFOX;
                 break;
