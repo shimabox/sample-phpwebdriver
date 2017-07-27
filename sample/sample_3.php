@@ -35,6 +35,12 @@ function sample_3 ($browser, array $size = [], $overrideUA = '')
 
             $cap->setCapability(Chrome\ChromeOptions::CAPABILITY, $options);
 
+            if (getenv('CHROME_DRIVER_PATH') !== '') {
+                putenv('webdriver.chrome.driver=' . getenv('CHROME_DRIVER_PATH'));
+            }
+
+            // ドライバーの起動
+            $driver = RemoteWebDriver::create($host, $cap);
             break;
         case WebDriverBrowserType::FIREFOX : // firefox
             $cap = DesiredCapabilities::firefox();
@@ -49,12 +55,14 @@ function sample_3 ($browser, array $size = [], $overrideUA = '')
 
             $cap->setCapability(Firefox\FirefoxDriver::PROFILE, $profile);
 
+            if (getenv('FIREFOX_DRIVER_PATH') !== '') {
+                putenv('webdriver.gecko.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+            }
+
+            // ドライバーの起動
+            $driver = RemoteWebDriver::create($host, $cap);
             break;
     }
-
-
-    // ドライバーの起動
-    $driver = RemoteWebDriver::create($host, $cap);
 
     // 画面サイズをMAXに
     $driver->manage()->window()->maximize();

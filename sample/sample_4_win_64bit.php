@@ -21,12 +21,21 @@ function sample_4 ($browser, array $size)
 
     switch ($browser) {
         case WebDriverBrowserType::CHROME : // chrome ドライバーの起動
+            if (getenv('CHROME_DRIVER_PATH') !== '') {
+                putenv('webdriver.chrome.driver=' . getenv('CHROME_DRIVER_PATH'));
+            }
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
             break;
         case WebDriverBrowserType::FIREFOX : // firefox ドライバーの起動
+            if (getenv('FIREFOX_DRIVER_PATH') !== '') {
+                putenv('webdriver.gecko.driver=' . getenv('FIREFOX_DRIVER_PATH'));
+            }
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::firefox());
             break;
         case WebDriverBrowserType::IE : // internet explorer ドライバーの起動
+            if (getenv('IE_DRIVER_PATH') !== '') {
+                putenv('webdriver.ie.driver=' . getenv('IE_DRIVER_PATH'));
+            }
             $driver = RemoteWebDriver::create($host, DesiredCapabilities::internetExplorer());
             break;
     }
