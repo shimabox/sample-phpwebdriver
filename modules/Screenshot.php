@@ -2,12 +2,7 @@
 
 namespace SMB\PhpWebDriver\Modules;
 
-use SMB\PhpWebDriver\Modules\Elements\SpecInfo;
-use SMB\PhpWebDriver\Modules\Elements\Spec;
-
-use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Remote\RemoteWebElement;
 use Facebook\WebDriver\Remote\WebDriverBrowserType;
 
 /**
