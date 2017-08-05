@@ -145,7 +145,11 @@ class Screenshot
 
                     // 現在表示されている範囲のキャプチャから指定した範囲で切り取った画像を
                     // imgFrameに貼り付ける
-                    $this->toPatchTheImage($tmpFile, $captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, $srcX, $srcY, $newWidth, $newHeight);
+                    $this->toPatchTheImage($captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, $srcX, $srcY, $newWidth, $newHeight);
+
+                    // 後処理
+                    $this->destroyImage($src);
+                    $this->deleteImageFile($tmpFile);
 
                     $scrollWidth += $newWidth;
 
@@ -154,7 +158,11 @@ class Screenshot
 
                 // 右端か下端に到達していない限り現在表示されている範囲のキャプチャは
                 // そのままimgFrameに貼り付ける
-                $this->toPatchTheImage($tmpFile, $captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, 0, 0, $viewWidth, $viewHeight);
+                $this->toPatchTheImage($captureFile, $imgFrame, $src, $scrollWidth, $scrollHeight, 0, 0, $viewWidth, $viewHeight);
+
+                // 後処理
+                $this->destroyImage($src);
+                $this->deleteImageFile($tmpFile);
 
                 $scrollWidth += $viewWidth;
                 $colCount += 1;
@@ -165,6 +173,8 @@ class Screenshot
         }
 
         $this->throwExceptionIfNotExistsFile($captureFile, 'Could not save full screenshot');
+
+        $this->destroyImage($imgFrame);
 
         return $captureFile;
     }
@@ -193,7 +203,6 @@ class Screenshot
 
     /**
      * 画像の継ぎ接ぎをする
-     * @param string    $tmpFile     現在表示されている範囲のキャプチャ画像
      * @param string    $captureFile キャプチャ画像パス
      * @param resource  $dest        貼り付け先画像
      * @param resource  $src         貼り付け元画像
@@ -204,15 +213,31 @@ class Screenshot
      * @param int       $srcW        貼り付け元画像の幅
      * @param int       $srcH        貼り付け元画像の高さ
      */
-    private function toPatchTheImage($tmpFile, $captureFile, $dest, $src, $destX, $destY, $srcX, $srcY, $srcW, $srcH)
+    private function toPatchTheImage($captureFile, $dest, $src, $destX, $destY, $srcX, $srcY, $srcW, $srcH)
     {
         // copy
         imagecopy($dest, $src, $destX, $destY, $srcX, $srcY, $srcW, $srcH);
 
         // save
         imagepng($dest, $captureFile);
+    }
 
-        @unlink($tmpFile); // unlink function might be restricted in mac os x.
+    /**
+     * 画像リソース破棄
+     * @param resource $image
+     */
+    private function destroyImage($image)
+    {
+        imagedestroy($image);
+    }
+
+    /**
+     * 画像ファイルの削除
+     * @param string $imgFile
+     */
+    private function deleteImageFile($imgFile)
+    {
+        @unlink($imgFile); // unlink function might be restricted in mac os x.
     }
 
     /**
