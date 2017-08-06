@@ -6,6 +6,7 @@ use SMB\PhpWebDriver\Tests\Util\Capabilities;
 use SMB\PhpWebDriver\Tests\Exception\DisabledWebDriverException;
 use SMB\PhpWebDriver\Tests\Exception\NotExistsWebDriverException;
 use SMB\PhpWebDriver\Modules\Screenshot;
+use SMB\PhpWebDriver\Modules\Elements\SpecPool;
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
@@ -162,6 +163,20 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     {
         $path = $this->capturePath($dir);
         $this->screenshot->takeFull($driver, $path, $filename.'.png', $this->capabilities->getBrowserName(), $sleep);
+    }
+
+    /**
+     * 指定された要素のスクリーンショット
+     * @param RemoteWebDriver $driver
+     * @param string $filename Without extension
+     * @param SpecPool $specPool
+     * @param int $sleep Sleep for seconds
+     * @param string $dir capture以下に階層が必要だったら階層を追加
+     */
+    protected function takeElementScreenshot(RemoteWebDriver $driver, $filename, SpecPool $specPool, $sleep=1, $dir='')
+    {
+        $path = $this->capturePath($dir);
+        $this->screenshot->takeElement($driver, $path, $filename, $this->capabilities->getBrowserName(), $specPool, $sleep);
     }
 
     /**

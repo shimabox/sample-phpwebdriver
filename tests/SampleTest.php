@@ -2,6 +2,9 @@
 
 namespace SMB\PhpWebDriver\Tests;
 
+use SMB\PhpWebDriver\Modules\Elements\Spec;
+use SMB\PhpWebDriver\Modules\Elements\SpecPool;
+
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\WebDriverBrowserType;
@@ -143,5 +146,309 @@ class SampleTest extends Base
         $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie');
 
         $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie_fullscreen');
+    }
+
+    /**
+     * (PC:chrome) 要素のキャプチャが撮れる
+     * @test
+     * @group chrome
+     */
+    public function it_can_take_element_of_pc_chrome()
+    {
+        $path = $this->capturePath();
+        $captureFileName = 'it_can_take_element_of_pc_chrome';
+        $targetCaptureFiles = [
+            $path. $captureFileName . '_0_0.png',
+            $path. $captureFileName . '_0_1.png',
+            $path. $captureFileName . '_0_2.png',
+            $path. $captureFileName . '_0_3.png',
+            $path. $captureFileName . '_0_4.png',
+            $path. $captureFileName . '_0_5.png',
+            $path. $captureFileName . '_0_6.png',
+            $path. $captureFileName . '_0_7.png',
+            $path. $captureFileName . '_0_8.png',
+            $path. $captureFileName . '_0_9.png',
+            $path. $captureFileName . '_1_0.png',
+            $path. $captureFileName . '_1_1.png',
+        ];
+
+        $this->deleteImageFiles($targetCaptureFiles);
+
+        $cap = $this->createCapabilities(WebDriverBrowserType::CHROME);
+
+        $driver = $this->createDriver($cap);
+        $driver->get('https://www.google.co.jp/');
+
+        // 検索Box
+        $findElement = $driver->findElement(WebDriverBy::name('q'));
+        // 検索Boxにキーワードを入力して
+        $findElement->sendKeys('お盆の予定');
+        // 検索実行
+        $findElement->submit();
+
+        $selector  = '.rc';
+        $selector2 = '.brs_col';
+
+        // 要素のセレクターを定義して
+        $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
+        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+
+        // SpecPoolに突っ込む
+        $specPool = (new SpecPool())
+                    ->addSpec($spec)
+                    ->addSpec($spec2);
+        
+        $this->takeElementScreenshot($driver, $captureFileName, $specPool);
+
+        foreach ($targetCaptureFiles as $file) {
+            $this->assertFileExists($file);
+        }
+    }
+
+    /**
+     * (SP:chrome) 要素のキャプチャが撮れる
+     * @test
+     * @group chrome
+     */
+    public function it_can_take_element_of_sp_chrome()
+    {
+        $path = $this->capturePath();
+        $captureFileName = 'it_can_take_element_of_sp_chrome';
+        $targetCaptureFiles = [
+            $path. $captureFileName . '_0_0.png',
+            $path. $captureFileName . '_0_1.png',
+            $path. $captureFileName . '_0_2.png',
+            $path. $captureFileName . '_0_3.png',
+            $path. $captureFileName . '_0_4.png',
+            $path. $captureFileName . '_0_5.png',
+            $path. $captureFileName . '_0_6.png',
+            $path. $captureFileName . '_0_7.png',
+            $path. $captureFileName . '_0_8.png',
+            $path. $captureFileName . '_0_9.png',
+            $path. $captureFileName . '_1_0.png',
+            $path. $captureFileName . '_1_1.png',
+        ];
+
+        $this->deleteImageFiles($targetCaptureFiles);
+
+        $cap = $this->createCapabilities(WebDriverBrowserType::CHROME);
+        $cap->settingDefaultUserAgent();
+
+        $dimension = $this->createDimension(['w' => 375, 'h' => 667]);
+
+        $driver = $this->createDriver($cap, $dimension);
+        $driver->get('https://www.google.co.jp/');
+
+        // 検索Box
+        $findElement = $driver->findElement(WebDriverBy::name('q'));
+        // 検索Boxにキーワードを入力して
+        $findElement->sendKeys('お盆の予定');
+        // 検索実行
+        $findElement->submit();
+
+        $selector  = '#rso > div > div.mnr-c';
+        $selector2 = 'a._bCp';
+
+        // 要素のセレクターを定義して
+        $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
+        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+
+        // SpecPoolに突っ込む
+        $specPool = (new SpecPool())
+                    ->addSpec($spec)
+                    ->addSpec($spec2);
+
+        $this->takeElementScreenshot($driver, $captureFileName, $specPool);
+
+        foreach ($targetCaptureFiles as $file) {
+            $this->assertFileExists($file);
+        }
+    }
+
+    /**
+     * (PC:firefox) 要素のキャプチャが撮れる
+     * @test
+     * @group firefox
+     */
+    public function it_can_take_element_of_pc_firefox()
+    {
+        $path = $this->capturePath();
+        $captureFileName = 'it_can_take_element_of_pc_firefox';
+        $targetCaptureFiles = [
+            $path. $captureFileName . '_0_0.png',
+            $path. $captureFileName . '_0_1.png',
+            $path. $captureFileName . '_0_2.png',
+            $path. $captureFileName . '_0_3.png',
+            $path. $captureFileName . '_0_4.png',
+            $path. $captureFileName . '_0_5.png',
+            $path. $captureFileName . '_0_6.png',
+            $path. $captureFileName . '_0_7.png',
+            $path. $captureFileName . '_0_8.png',
+            $path. $captureFileName . '_0_9.png',
+            $path. $captureFileName . '_1_0.png',
+            $path. $captureFileName . '_1_1.png',
+        ];
+
+        $this->deleteImageFiles($targetCaptureFiles);
+
+        $cap = $this->createCapabilities(WebDriverBrowserType::FIREFOX);
+
+        $driver = $this->createDriver($cap);
+        $driver->get('https://www.google.co.jp/');
+
+        // 検索Box
+        $findElement = $driver->findElement(WebDriverBy::name('q'));
+        // 検索Boxにキーワードを入力して
+        $findElement->sendKeys('お盆の予定');
+        // 検索実行
+        $findElement->submit();
+
+        $selector  = '.rc';
+        $selector2 = '.brs_col';
+
+        // 要素のセレクターを定義して
+        $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
+        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+
+        // SpecPoolに突っ込む
+        $specPool = (new SpecPool())
+                    ->addSpec($spec)
+                    ->addSpec($spec2);
+
+        $this->takeElementScreenshot($driver, $captureFileName, $specPool);
+
+        foreach ($targetCaptureFiles as $file) {
+            $this->assertFileExists($file);
+        }
+    }
+
+    /**
+     * (SP:firefox) 要素のキャプチャが撮れる
+     * @test
+     * @group firefox
+     */
+    public function it_can_take_element_of_sp_firefox()
+    {
+        $path = $this->capturePath();
+        $captureFileName = 'it_can_take_element_of_sp_firefox';
+        $targetCaptureFiles = [
+            $path. $captureFileName . '_0_0.png',
+            $path. $captureFileName . '_0_1.png',
+            $path. $captureFileName . '_0_2.png',
+            $path. $captureFileName . '_0_3.png',
+            $path. $captureFileName . '_0_4.png',
+            $path. $captureFileName . '_0_5.png',
+            $path. $captureFileName . '_0_6.png',
+            $path. $captureFileName . '_0_7.png',
+            $path. $captureFileName . '_0_8.png',
+            $path. $captureFileName . '_0_9.png',
+            $path. $captureFileName . '_1_0.png',
+            $path. $captureFileName . '_1_1.png',
+        ];
+
+        $this->deleteImageFiles($targetCaptureFiles);
+
+        $cap = $this->createCapabilities(WebDriverBrowserType::FIREFOX);
+        $cap->settingDefaultUserAgent();
+
+        $dimension = $this->createDimension(['w' => 375, 'h' => 667]);
+
+        $driver = $this->createDriver($cap, $dimension);
+        $driver->get('https://www.google.co.jp/');
+
+        // 検索Box
+        $findElement = $driver->findElement(WebDriverBy::name('q'));
+        // 検索Boxにキーワードを入力して
+        $findElement->sendKeys('お盆の予定');
+        // 検索実行
+        $findElement->submit();
+
+        $selector  = '#rso > div > div.mnr-c';
+        $selector2 = 'a._bCp';
+
+        // 要素のセレクターを定義して
+        $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
+        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+
+        // SpecPoolに突っ込む
+        $specPool = (new SpecPool())
+                    ->addSpec($spec)
+                    ->addSpec($spec2);
+
+        $this->takeElementScreenshot($driver, $captureFileName, $specPool);
+
+        foreach ($targetCaptureFiles as $file) {
+            $this->assertFileExists($file);
+        }
+    }
+
+    /**
+     * (PC:internet explorer) 要素のキャプチャが撮れる
+     * @test
+     * @group ie
+     */
+    public function it_can_take_element_of_pc_ie()
+    {
+        $path = $this->capturePath();
+        $captureFileName = 'it_can_take_element_of_pc_ie';
+        $targetCaptureFiles = [
+            $path. $captureFileName . '_0_0.png',
+            $path. $captureFileName . '_0_1.png',
+            $path. $captureFileName . '_0_2.png',
+            $path. $captureFileName . '_0_3.png',
+            $path. $captureFileName . '_0_4.png',
+            $path. $captureFileName . '_0_5.png',
+            $path. $captureFileName . '_0_6.png',
+            $path. $captureFileName . '_0_7.png',
+            $path. $captureFileName . '_0_8.png',
+            $path. $captureFileName . '_0_9.png',
+            $path. $captureFileName . '_1_0.png',
+            $path. $captureFileName . '_1_1.png',
+        ];
+
+        $this->deleteImageFiles($targetCaptureFiles);
+
+        $cap = $this->createCapabilities(WebDriverBrowserType::IE);
+
+        $driver = $this->createDriver($cap);
+        $driver->get('https://www.google.co.jp/');
+
+        // 検索Box
+        $findElement = $driver->findElement(WebDriverBy::name('q'));
+        // 検索Boxにキーワードを入力して
+        $findElement->sendKeys('お盆の予定');
+        // 検索実行
+        $findElement->submit();
+
+        $selector  = '.rc';
+        $selector2 = '.brs_col';
+
+        // 要素のセレクターを定義して
+        $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
+        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+
+        // SpecPoolに突っ込む
+        $specPool = (new SpecPool())
+                    ->addSpec($spec)
+                    ->addSpec($spec2);
+
+        $this->takeElementScreenshot($driver, $captureFileName, $specPool);
+
+        foreach ($targetCaptureFiles as $file) {
+            $this->assertFileExists($file);
+        }
+    }
+
+    /**
+     * 画像の削除
+     * @param array $imageFiles
+     */
+    private function deleteImageFiles(array $imageFiles)
+    {
+        foreach ($imageFiles as $file) {
+            if (file_exists($file)) {
+                @unlink($file);
+            }
+        }
     }
 }
