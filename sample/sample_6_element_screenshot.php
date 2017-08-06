@@ -25,7 +25,7 @@ function sample_6($browser, array $size=[], $overrideUA = '')
     // selenium
     $host = 'http://localhost:4444/wd/hub';
 
-     switch ($browser) {
+    switch ($browser) {
         case WebDriverBrowserType::CHROME :
             $cap = DesiredCapabilities::chrome();
 
