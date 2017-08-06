@@ -2,6 +2,10 @@
 
 namespace SMB\PhpWebDriver\Modules;
 
+use SMB\PhpWebDriver\Modules\Elements\SpecPool;
+use SMB\PhpWebDriver\Modules\Elements\Spec;
+
+use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\WebDriverBrowserType;
 
@@ -177,6 +181,77 @@ class Screenshot
         $this->destroyImage($imgFrame);
 
         return $captureFile;
+    }
+
+    /**
+     * 指定された要素のキャプチャ
+     * @param RemoteWebDriver $driver
+     * @param string $filepath
+     * @param string $filename Without extension
+     * @param string $browser
+     * @param SpecPool $specPool 取得したい要素のスペック
+     * @param int $sleep Sleep for seconds
+     * @return string  キャプチャ画像ファイルパス
+     * @throws \Exception
+     * @link https://github.com/facebook/php-webdriver/wiki/taking-full-screenshot-and-of-an-element
+     */
+    public function takeElement(RemoteWebDriver $driver, $filepath, $filename, $browser, SpecPool $specPool, $sleep=1)
+    {
+        // 一旦全画面のキャプチャを撮る
+        $tmpFullScreenshot = $this->takeFull($driver, $filepath, $filename . '_tmp_' . time() . '.png', $browser, $sleep);
+        // create image instances
+        $src = imagecreatefrompng($tmpFullScreenshot);
+
+        $elements = null;
+        $specList = $specPool->getSpec();
+        foreach ($specList as $specIndex => $spec) {
+            $driver->wait()->until(
+                function () use ($driver, $spec, &$elements) {
+                    $elements = $driver->findElements(WebDriverBy::cssSelector($spec->getSelector()));
+
+                    $count = count($elements);
+                    $expected = $spec->getExpectedElementCount();
+
+                    $conditon = $spec->getCondition();
+                    switch ($conditon) {
+                        case Spec::EQUAL :
+                            return $count === $expected;
+                        case Spec::NOT_EQUAL :
+                            return $count !== $expected;
+                        case Spec::GREATER_THAN :
+                            return $count > $expected;
+                        case Spec::LESS_THAN :
+                            return $count < $expected;
+                        case Spec::GREATER_THAN_OR_EQUAL :
+                            return $count >= $expected;
+                        case Spec::LESS_THAN_OR_EQUAL :
+                            return $count <= $expected;
+                    }
+                }
+            );
+
+            foreach ($elements as $index => $element) {
+                // 指定された要素のサイズ
+                $elementWidth = $element->getSize()->getWidth();
+                $elementHeight = $element->getSize()->getHeight();
+
+                // 指定された要素が存在する座標
+                $elementSrcX = $element->getLocation()->getX();
+                $elementSrcY = $element->getLocation()->getY();
+
+                $dest = imagecreatetruecolor($elementWidth, $elementHeight);
+                $captureFile = $filepath . $filename . '_' . $specIndex . '_' . $index . '.png';
+
+                $this->toPatchTheImage($captureFile, $dest, $src, 0, 0, $elementSrcX, $elementSrcY, $elementWidth, $elementHeight);
+
+                $this->destroyImage($dest);
+
+                $this->throwExceptionIfNotExistsFile($captureFile, 'Could not save element screenshot');
+            }
+        }
+
+        $this->destroyImage($src);
+        $this->deleteImageFile($tmpFullScreenshot);
     }
 
     /**
