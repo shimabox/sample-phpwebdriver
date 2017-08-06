@@ -183,12 +183,15 @@ $ vendor/bin/phpunit
 - ``` $ php sample/sample_3.php ```
 - ``` $ php sample/sample_4_win_64bit.php ```
 - ``` $ php sample/sample_5_fullscreenshot.php ```
+- ``` $ php sample/sample_6_element_screenshot.php ```
 
 ## See Also
 
 - [php-webdriverをmacのローカルで試す | Shimabox Blog](https://blog.shimabox.net/2017/04/30/try_php-webdriver_locally_on_mac/ "php-webdriverをmacのローカルで試す | Shimabox Blog")
 - [php-webdriverをWindowsのローカルで試す | Shimabox Blog](https://blog.shimabox.net/2017/06/09/try_php-webdriver_locally_on_windows "php-webdriverをWindowsのローカルで試す | Shimabox Blog")
 - [CentOS 6.8 でphp-webdriverを試す (Firefox編) | Shimabox Blog](https://blog.shimabox.net/2017/05/04/try_php-webdriver_with_centos-6-8_for_firefox/ "CentOS 6.8 でphp-webdriverを試す (Firefox編) | Shimabox Blog")
+- [php-webdriverを使ってフルスクリーンのキャプチャを撮る | Shimabox Blog](https://blog.shimabox.net/2017/07/31/take_full_screen_capture_with_php-webdriver/ "php-webdriverを使ってフルスクリーンのキャプチャを撮る | Shimabox Blog")
+- [php-webdriverを使って指定した要素のキャプチャを撮る | Shimabox Blog](https://blog.shimabox.net/2017/08/07/take_a_capture_of_the_specified_element/ "php-webdriverを使って指定した要素のキャプチャを撮る | Shimabox Blog")
 
 ## License
 
