@@ -23,8 +23,8 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected $host = 'http://localhost:4444/wd/hub';
 
     /**
-     * Capabilities
-     * @var \Facebook\WebDriver\Remote\Desired\Capabilities
+     * DesiredCapabilities
+     * @var \Facebook\WebDriver\Remote\DesiredCapabilities
      */
     protected $capabilities;
 
@@ -86,7 +86,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
             $cap = $this->createCapabilities();
         }
 
-        /* @var \Facebook\WebDriver\Remote\Desired\Capabilities */
+        /* @var \Facebook\WebDriver\Remote\DesiredCapabilities */
         $this->capabilities = $cap->get();
 
         // ドライバーの起動
