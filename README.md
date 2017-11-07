@@ -1,6 +1,9 @@
 # sample-phpwebdriver
 Test with phpunit and phpwebdriver
 
+# Attention
+This library was transferred to [shimabox/screru](https://github.com/shimabox/screru "shimabox/screru: Screru is a library that supplements php-webdriver")
+
 ## Requirements
 
 - PHP 5.5+ or newer
