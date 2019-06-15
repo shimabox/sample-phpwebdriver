@@ -7,6 +7,7 @@ use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\Chrome;
 use Facebook\WebDriver\Firefox;
 
@@ -87,13 +88,19 @@ function sample_6($browser, array $size=[], $overrideUA = '')
     // 検索実行
     $findElement->submit();
 
+    // 指定した要素がコンテンツに出現するまで待ちます.
+    // #botstuff をターゲットにします.
+    $driver->wait(10)->until(
+        WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::id('botstuff'))
+    );
+
     // pc と sp で指定要素を変える
-    $selector = $overrideUA === '' ? '.rc' : '#rso > div > div.mnr-c';
-    $selector2 = $overrideUA === '' ? '.brs_col' : 'a._bCp';
+    $selector = $overrideUA === '' ? '.g' : '.uUPGi';
+    $selector2 = $overrideUA === '' ? '#hdtbSum' : '#sfcnt';
 
     // 要素のセレクターを定義して
     $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
-    $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+    $spec2 = new Spec($selector2, Spec::EQUAL, 1);
 
     // SpecPoolに突っ込む
     $specPool = (new SpecPool())
@@ -105,7 +112,7 @@ function sample_6($browser, array $size=[], $overrideUA = '')
     $captureDirectoryPath = realpath(__DIR__ . '/../capture') . '/';
 
     $screenshot = new Screenshot();
-    $screenshot->takeElement($driver, $captureDirectoryPath, $fileName, $browser, $specPool);
+    $screenshot->takeElement($driver, $captureDirectoryPath, $fileName, $specPool);
 
     // ブラウザを閉じる
     $driver->close();

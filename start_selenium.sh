@@ -12,4 +12,4 @@ sudo Xvfb :1 -screen 0 1366x768x24 &
 export DISPLAY=:1
 
 # selenium
-java -Dwebdriver.gecko.driver=/usr/local/bin/geckodriver -jar selenium-server-standalone-3.3.1.jar &
+java -Dwebdriver.gecko.driver=/usr/local/bin/geckodriver -jar selenium-server-standalone-3.8.1.jar -enablePassThrough false &
