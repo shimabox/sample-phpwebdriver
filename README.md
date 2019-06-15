@@ -1,11 +1,8 @@
 # sample-phpwebdriver
 Test with phpunit and phpwebdriver
 
-## Attention
+## Attention!!
 This library was transferred to [shimabox/screru](https://github.com/shimabox/screru "shimabox/screru: Screru is a library that supplements php-webdriver")
-
-<h2 style="color: crimson;">Attention</h2>
-<p style="color: crimson;">This library was transferred to <a href="https://github.com/shimabox/screru" title="shimabox/screru: Screru is a library that supplements php-webdriver">shimabox/screru</a></p>
 
 ## Requirements
 
