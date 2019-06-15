@@ -7,7 +7,6 @@ use SMB\PhpWebDriver\Modules\Elements\Spec;
 
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
-use Facebook\WebDriver\Remote\WebDriverBrowserType;
 
 /**
  * Screenshot
@@ -22,7 +21,7 @@ class Screenshot
 
     /**
      * 画面キャプチャ
-     * @param RemoteWebDriver $driver
+     * @param \Facebook\WebDriver\Remote\RemoteWebDriver $driver
      * @param string $filename
      * @param int $sleep Sleep for seconds
      * @return string キャプチャ画像ファイルパス
@@ -32,31 +31,29 @@ class Screenshot
         (int)$sleep <= 0 ?: sleep((int)$sleep);
 
         $driver->executeScript(self::$hiddenScrollBarStyle);
-        $driver->takeScreenshot($filename);
 
-        $this->throwExceptionIfNotExistsFile($filename, 'Could not save screenshot');
+        $_filename = $this->removeExtension($filename) . '.png';
+        $driver->takeScreenshot($_filename);
 
-        return $filename;
+        $this->throwExceptionIfNotExistsFile($_filename, 'Could not save screenshot');
+
+        return $_filename;
     }
 
     /**
      * 全画面キャプチャ
-     * @param RemoteWebDriver $driver
+     * @param \Facebook\WebDriver\Remote\RemoteWebDriver $driver
      * @param string $filepath
      * @param string $filename
-     * @param string $browser
      * @param int $sleep Sleep for seconds
      * @return string キャプチャ画像ファイルパス
      */
-    public function takeFull(RemoteWebDriver $driver, $filepath, $filename, $browser, $sleep=1)
+    public function takeFull(RemoteWebDriver $driver, $filepath, $filename, $sleep=1)
     {
         (int)$sleep <= 0 ?: sleep((int)$sleep);
 
-        $captureFile = rtrim($filepath, '/') . '/' . $filename;
-
-        if ($browser === WebDriverBrowserType::IE) { // IE(internet explorer)はページ全体を撮ってくれる
-            return $this->take($driver, $captureFile, 0);
-        }
+        $_filename = $this->removeExtension($filename);
+        $captureFile = $this->normalizeFilePath($filepath) . $_filename . '.png';
 
         // スクロールバー非表示
         $driver->executeScript(self::$hiddenScrollBarStyle);
@@ -107,10 +104,13 @@ class Screenshot
                 }
 
                 // 現在表示されている範囲のキャプチャをとる
-                $tmpFile = $filepath . sprintf($browser . '_tmp_%d_%d_', $rowCount, $colCount) . '_' . time() . '.png';
+                $tmpFile = $filepath . sprintf('tmp_%d_%d_', $rowCount, $colCount) . microtime(true) . '.png';
                 $driver->takeScreenshot($tmpFile);
 
                 $this->throwExceptionIfNotExistsFile($tmpFile, 'Could not save tmp screenshot');
+
+                // $driver->takeScreenshotで撮ったキャプチャのサイズがviewサイズと違っていたらリサイズする
+                $this->resizeCaptureFileToViewSize($tmpFile, $viewWidth, $viewHeight);
 
                 // 貼り付け元画像を作成
                 $src = imagecreatefrompng($tmpFile);
@@ -185,27 +185,31 @@ class Screenshot
 
     /**
      * 指定された要素のキャプチャ
-     * @param RemoteWebDriver $driver
+     * @param \Facebook\WebDriver\Remote\RemoteWebDriver $driver
      * @param string $filepath
      * @param string $filename Without extension
-     * @param string $browser
-     * @param SpecPool $specPool 取得したい要素のスペック
+     * @param \SMB\Screru\Screenshot\Elements\SpecPool $specPool 取得したい要素のスペック
      * @param int $sleep Sleep for seconds
-     * @return string  キャプチャ画像ファイルパス
-     * @throws \Exception
+     * @return array キャプチャ画像ファイルパス
+     * @throws \Facebook\WebDriver\Exception\TimeOutException
      * @link https://github.com/facebook/php-webdriver/wiki/taking-full-screenshot-and-of-an-element
      */
-    public function takeElement(RemoteWebDriver $driver, $filepath, $filename, $browser, SpecPool $specPool, $sleep=1)
+    public function takeElement(RemoteWebDriver $driver, $filepath, $filename, SpecPool $specPool, $sleep=1)
     {
         // 一旦全画面のキャプチャを撮る
-        $tmpFullScreenshot = $this->takeFull($driver, $filepath, $filename . '_tmp_' . time() . '.png', $browser, $sleep);
+        $_filename = $this->removeExtension($filename);
+        $tmpFullScreenshot = $this->takeFull($driver, $filepath, $_filename . '_tmp_' . microtime(true) . '.png', $sleep);
+
         // create image instances
         $src = imagecreatefrompng($tmpFullScreenshot);
 
-        $elements = null;
+        $captureFileList = [];
+
         $specList = $specPool->getSpec();
         foreach ($specList as $specIndex => $spec) {
-            $driver->wait()->until(
+            $elements = null;
+
+            $driver->wait(60, 250)->until(
                 function () use ($driver, $spec, &$elements) {
                     $elements = $driver->findElements(WebDriverBy::cssSelector($spec->getSelector()));
 
@@ -240,18 +244,54 @@ class Screenshot
                 $elementSrcY = $element->getLocation()->getY();
 
                 $dest = imagecreatetruecolor($elementWidth, $elementHeight);
-                $captureFile = $filepath . $filename . '_' . $specIndex . '_' . $index . '.png';
+                $captureFile = $this->normalizeFilePath($filepath) . $_filename . '_' . $specIndex . '_' . $index . '.png';
 
                 $this->toPatchTheImage($captureFile, $dest, $src, 0, 0, $elementSrcX, $elementSrcY, $elementWidth, $elementHeight);
 
                 $this->destroyImage($dest);
 
                 $this->throwExceptionIfNotExistsFile($captureFile, 'Could not save element screenshot');
+
+                $captureFileList[] = $captureFile;
             }
         }
 
         $this->destroyImage($src);
         $this->deleteImageFile($tmpFullScreenshot);
+
+        return $captureFileList;
+    }
+
+    /**
+     * $driver->takeScreenshotで撮ったキャプチャのサイズがviewサイズ(window.innerWidth, window.innerHeight)
+     * と違っていたらviewサイズにリサイズする
+     * 
+     * $driver->takeScreenshotで撮ったキャプチャのサイズがviewサイズと違っていると正しく全画面キャプチャができない
+     * 
+     * @param string $tmpCaptureFile $driver->takeScreenshotで撮ったキャプチャ
+     * @param int $viewWidth  viewの横幅(window.innerWidth)
+     * @param int $viewHeight viewの縦幅(window.innerHeight)
+     */
+    private function resizeCaptureFileToViewSize($tmpCaptureFile, $viewWidth, $viewHeight)
+    {
+        // キャプチャのサイズとviewサイズが一致していたら何もしない
+        list($width, $height) = getimagesize($tmpCaptureFile);
+        if ($width === $viewWidth && $height === $viewHeight) {
+            return;
+        }
+
+        // キャプチャのresource
+        $source = imagecreatefrompng($tmpCaptureFile);
+        // 新しく描画する画像resourceを作成
+        $dest = imagecreatetruecolor($width, $height);
+
+        // viewサイズにリサイズ
+        imagecopyresampled($dest, $source, 0, 0, 0, 0, $viewWidth, $viewHeight, $width, $height);
+        imagepng($dest, $tmpCaptureFile);
+
+        // destroy
+        imagedestroy($source);
+        imagedestroy($dest);
     }
 
     /**
@@ -327,5 +367,25 @@ class Screenshot
         if( ! file_exists($file)) {
             throw new \Exception($message);
         }
+    }
+
+    /**
+     * ファイルパスの正規化
+     * @param string $filepath
+     * @return string
+     */
+    private function normalizeFilePath($filepath)
+    {
+        return rtrim($filepath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * 拡張子の削除
+     * @param type $filename
+     * @return string
+     */
+    private function removeExtension($filename)
+    {
+        return preg_replace('/\.(png|jpg|jpeg|gif)$/i', '', $filename);
     }
 }

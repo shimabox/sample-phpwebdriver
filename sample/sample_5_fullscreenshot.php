@@ -5,9 +5,9 @@ require_once realpath(__DIR__ . '/../vendor') . '/autoload.php';
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\WebDriverBrowserType;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
-use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverDimension;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\Chrome;
 use Facebook\WebDriver\Firefox;
 
@@ -86,24 +86,18 @@ function sample_5($browser, array $size=[], $overrideUA = '')
     // 検索実行
     $element->submit();
 
-    // 検索結果画面のタイトルが '夏休みの予定 - Google 検索' になるまで10秒間待機する
-    // 指定したタイトルにならずに10秒以上経ったら
-    // 'Facebook\WebDriver\Exception\TimeOutException' がthrowされる
+    // 指定した要素がコンテンツに出現するまで待ちます.
+    // #botstuff をターゲットにします.
     $driver->wait(10)->until(
-        WebDriverExpectedCondition::titleIs('夏休みの予定 - Google 検索')
+        WebDriverExpectedCondition::visibilityOfElementLocated(WebDriverBy::id('botstuff'))
     );
-
-    // GWの予定 - Google 検索 というタイトルが取得できることを確認する
-    if ($driver->getTitle() !== '夏休みの予定 - Google 検索') {
-        throw new Exception('fail');
-    }
 
     // キャプチャ
     $fileName = $overrideUA === '' ? __METHOD__ . "_{$browser}.png" : __METHOD__ . "_override_ua_{$browser}.png";
     $captureDirectoryPath = realpath(__DIR__ . '/../capture') . '/';
 
     $screenshot = new Screenshot();
-    $screenshot->takeFull($driver, $captureDirectoryPath, $fileName, $browser);
+    $screenshot->takeFull($driver, $captureDirectoryPath, $fileName);
 
     // ブラウザを閉じる
     $driver->close();
