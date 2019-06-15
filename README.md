@@ -6,7 +6,7 @@ This library was transferred to [shimabox/screru](https://github.com/shimabox/sc
 
 ## Requirements
 
-- PHP 5.5+ or newer
+- PHP 5.6+ or newer
 - [Composer](https://getcomposer.org)
 - Java(JDK) >=1.8
   - http://www.oracle.com/technetwork/java/javase/downloads/index.html
@@ -20,6 +20,34 @@ $ composer install --dev # or composer update
 $ cp .env.example .env
 ```
 
+## Preparation
+
+Download selenium-server-standalone, ChromeDriver, geckodriver, IEDriverServer etc.
+
+|Platform|selenium-server-standalone|ChromeDriver|geckodriver|IEDriverServer|
+|:---|:---|:---|:---|:---|
+|Mac|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_mac64.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-macos.tar.gz)|-|
+|Windows(64bit)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_win32.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-win64.zip)|[3.14.0](https://selenium-release.storage.googleapis.com/3.14/IEDriverServer_Win32_3.14.0.zip)|
+|Linux(CentOS 6.9)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|-|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz)|-|
+|Linux(Ubuntu trusty)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_linux64.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz)|-|
+
+### Use downloader.
+
+- e.g) For Mac.
+```
+$ php selenium_downloader.php -p m -d . -s 3.8.1 -c 75.0.3770.90 -g 0.24.0
+```
+- e.g) For Windows.
+```
+$ php selenium_downloader.php -p w -d . -s 3.8.1 -c 75.0.3770.90 -g 0.24.0 -i 3.14.0
+```
+- e.g) For Linux.
+```
+$ php selenium_downloader.php -p l -d . -s 3.8.1 -g 0.24.0
+```
+
+@see [selenium-downloader/README.md at master · shimabox/selenium-downloader · GitHub](https://github.com/shimabox/selenium-downloader/blob/master/README.md "selenium-downloader/README.md at master · shimabox/selenium-downloader · GitHub")
+
 ## Linux (CentOS)
 
 - Operation confirmed in version 6.9
@@ -30,10 +58,10 @@ $ cp .env.example .env
 ```
 $ sudo yum -y install firefox
 ```
-- version 52.2.0
+- version 60.7.0
 ```
 $ firefox -v
-Mozilla Firefox 52.2.0
+Mozilla Firefox 60.7.0
 ```
 
 ### Xvfb
@@ -46,13 +74,13 @@ $ sudo yum -y groupinstall "Japanese Support"
 
 ### selenium-server-standalone
 
-- selenium-server-standalone 3.3.1
-  - http://selenium-release.storage.googleapis.com/3.3/selenium-server-standalone-3.3.1.jar
+- selenium-server-standalone 3.8.1
+  - http://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar
 
 ### geckodriver
 
-- [geckodriver v0.15.0](https://github.com/mozilla/geckodriver/releases/tag/v0.15.0)
-  - https://github.com/mozilla/geckodriver/releases/download/v0.15.0/geckodriver-v0.15.0-linux64.tar.gz
+- [geckodriver v0.24.0](https://github.com/mozilla/geckodriver/releases/tag/v0.24.0)
+  - https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
 
 ```
 $ sudo mv geckodriver /usr/local/bin/
@@ -83,17 +111,17 @@ $ sudo sh kill_selenium.sh
 
 ## macOS
 
-- Operation confirmed in macOS Sierra 10.12.4
+- Operation confirmed in macOS Mojave 10.14.5
 
 ### selenium-server-standalone
 
-- selenium-server-standalone 3.4.0
-  - http://selenium-release.storage.googleapis.com/3.4/selenium-server-standalone-3.4.0.jar
+- selenium-server-standalone 3.8.1
+  - http://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar
 
 ### geckodriver
 
-- [geckodriver v0.17.0](https://github.com/mozilla/geckodriver/releases/tag/v0.17.0)
-  - https://github.com/mozilla/geckodriver/releases/download/v0.17.0/geckodriver-v0.17.0-macos.tar.gz
+- [geckodriver v0.24.0](https://github.com/mozilla/geckodriver/releases/tag/v0.24.0)
+  - https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-macos.tar.gz
 
 ```
 $ mv geckodriver /usr/local/bin/
@@ -102,8 +130,8 @@ $ chmod +x /usr/local/bin/geckodriver
 
 ### chromedriver
 
-- [chromedriver 2.31](https://chromedriver.storage.googleapis.com/index.html?path=2.31/ "")
-  - https://chromedriver.storage.googleapis.com/2.31/chromedriver_mac64.zip
+- [chromedriver 75.0.3770.90](https://chromedriver.storage.googleapis.com/index.html?path=75.0.3770.90/ "")
+  - https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_mac64.zip
 
 ```
 $ mv chromedriver /usr/local/bin/
@@ -122,7 +150,7 @@ ENABLED_CHROME_DRIVER=true
 
 1. Run selenium-server-standalone
 ```
-$ java -jar selenium-server-standalone-3.4.0.jar
+$ java -jar selenium-server-standalone-3.8.1.jar -enablePassThrough false
 ```
 2. Run phpunit
 ```
@@ -133,23 +161,23 @@ $ vendor/bin/phpunit
 
 ### selenium-server-standalone
 
-- selenium-server-standalone 3.4.0
-  - http://selenium-release.storage.googleapis.com/3.4/selenium-server-standalone-3.4.0.jar
+- selenium-server-standalone 3.8.1
+  - http://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar
 
 ### geckodriver.exe
 
-- [geckodriver v0.17.0](https://github.com/mozilla/geckodriver/releases/tag/v0.17.0)
-  - https://github.com/mozilla/geckodriver/releases/download/v0.17.0/geckodriver-v0.17.0-win64.zip
+- [geckodriver v0.24.0](https://github.com/mozilla/geckodriver/releases/tag/v0.24.0)
+  - https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-win64.zip
 
 ### chromedriver.exe
 
-- [chromedriver 2.31](https://chromedriver.storage.googleapis.com/index.html?path=2.31/ "")
-  - https://chromedriver.storage.googleapis.com/2.31/chromedriver_win32.zip
+- [chromedriver 75.0.3770.90](https://chromedriver.storage.googleapis.com/index.html?path=75.0.3770.90/ "")
+  - https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_win32.zip
 
 ### IEDriverServer.exe
 
-- [IEDriverServer_x64_3.4.0.zip](http://selenium-release.storage.googleapis.com/index.html?path=3.4/)
-  - http://selenium-release.storage.googleapis.com/3.4/IEDriverServer_x64_3.4.0.zip
+- [IEDriverServer_x64_3.14.0.zip](http://selenium-release.storage.googleapis.com/index.html?path=3.14/)
+  - http://selenium-release.storage.googleapis.com/3.14/IEDriverServer_x64_3.14.0.zip
 
 #### .env
 
@@ -160,7 +188,7 @@ ENABLED_FIREFOX_DRIVER=true
 ENABLED_IE_DRIVER=true
 // true to platform is windows
 IS_PLATFORM_WINDOWS=true
-// webdriver path for IE
+// describe the webdriver path if necessary
 CHROME_DRIVER_PATH='your chromedriver.exe path'
 FIREFOX_DRIVER_PATH='your geckodriver.exe path'
 IE_DRIVER_PATH='your IEDriverServer.exe path'
@@ -171,7 +199,7 @@ IE_DRIVER_PATH='your IEDriverServer.exe path'
 1. Open ```cmd``` etc.
 2. Run selenium-server-standalone
 ```shell
-$ java -jar selenium-server-standalone-3.4.0.jar
+$ java -jar selenium-server-standalone-3.8.1.jar -enablePassThrough false
 ```
 3. Open a new ```cmd``` etc.
 4. Run phpunit
