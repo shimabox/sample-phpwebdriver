@@ -162,7 +162,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected function takeFullScreenshot(RemoteWebDriver $driver, $filename, $sleep=1, $dir='')
     {
         $path = $this->capturePath($dir);
-        $this->screenshot->takeFull($driver, $path, $filename.'.png', $this->capabilities->getBrowserName(), $sleep);
+        $this->screenshot->takeFull($driver, $path, $filename.'.png', $sleep);
     }
 
     /**
@@ -176,7 +176,7 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected function takeElementScreenshot(RemoteWebDriver $driver, $filename, SpecPool $specPool, $sleep=1, $dir='')
     {
         $path = $this->capturePath($dir);
-        $this->screenshot->takeElement($driver, $path, $filename, $this->capabilities->getBrowserName(), $specPool, $sleep);
+        $this->screenshot->takeElement($driver, $path, $filename, $specPool, $sleep);
     }
 
     /**

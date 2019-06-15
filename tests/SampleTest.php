@@ -226,7 +226,6 @@ class SampleTest extends Base
             $path. $captureFileName . '_0_8.png',
             $path. $captureFileName . '_0_9.png',
             $path. $captureFileName . '_1_0.png',
-            $path. $captureFileName . '_1_1.png',
         ];
 
         $this->deleteImageFiles($targetCaptureFiles);
@@ -246,12 +245,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
-        $selector  = '#rso > div > div.mnr-c';
-        $selector2 = 'a._bCp';
+        $selector  = '.uUPGi';
+        $selector2 = '#sfcnt';
 
         // 要素のセレクターを定義して
         $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
-        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+        $spec2 = new Spec($selector2, Spec::EQUAL, 1);
 
         // SpecPoolに突っ込む
         $specPool = (new SpecPool())
@@ -343,7 +342,6 @@ class SampleTest extends Base
             $path. $captureFileName . '_0_8.png',
             $path. $captureFileName . '_0_9.png',
             $path. $captureFileName . '_1_0.png',
-            $path. $captureFileName . '_1_1.png',
         ];
 
         $this->deleteImageFiles($targetCaptureFiles);
@@ -363,12 +361,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
-        $selector  = '#rso > div > div.mnr-c';
-        $selector2 = 'a._bCp';
+        $selector  = '.uUPGi';
+        $selector2 = '#sfcnt';
 
         // 要素のセレクターを定義して
         $spec = new Spec($selector, Spec::GREATER_THAN_OR_EQUAL, 10);
-        $spec2 = new Spec($selector2, Spec::GREATER_THAN, 1);
+        $spec2 = new Spec($selector2, Spec::EQUAL, 1);
 
         // SpecPoolに突っ込む
         $specPool = (new SpecPool())
