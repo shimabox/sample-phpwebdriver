@@ -187,6 +187,6 @@ abstract class Base extends \PHPUnit_Framework_TestCase
     protected function capturePath($dir='')
     {
         $_dir = $dir === '' ? '' : trim($dir, '/') . '/';
-        return realpath(__DIR__ . '/../capture') . '/' . $_dir;
+        return realpath(__DIR__ . '/capture') . '/' . $_dir;
     }
 }

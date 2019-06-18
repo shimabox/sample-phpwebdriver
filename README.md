@@ -215,6 +215,7 @@ $ vendor/bin/phpunit
 - ``` $ php sample/sample_4_win_64bit.php ```
 - ``` $ php sample/sample_5_fullscreenshot.php ```
 - ``` $ php sample/sample_6_element_screenshot.php ```
+- ``` $ php sample/sample_7_controll_display_state_of_elements.php ```
 
 ## See Also
 

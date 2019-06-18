@@ -24,15 +24,13 @@ class SampleTest extends Base
         $cap = $this->createCapabilities(WebDriverBrowserType::CHROME);
 
         $driver = $this->createDriver($cap);
+
+        // 画面サイズをMAXにする場合
+        $this->windowMaximize($driver);
+
         $driver->get('https://www.yahoo.co.jp/');
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
-
-        // $driver->takeScreenshot($filename);
-        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome');
-
-        // 全画面キャプチャ
-        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_chrome_fullscreen');
     }
 
     /**
@@ -64,10 +62,6 @@ class SampleTest extends Base
 
         // https://www.yahoo.co.jp/ にリダイレクトされていないこと
         $this->assertEquals('https://m.yahoo.co.jp/', $driver->getCurrentURL());
-
-        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome');
-
-        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_sp_chrome_fullscreen');
     }
 
     /**
@@ -87,10 +81,6 @@ class SampleTest extends Base
         $driver->get('https://www.yahoo.co.jp/');
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
-
-        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox');
-
-        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_firefox_fullscreen');
     }
 
     /**
@@ -122,10 +112,6 @@ class SampleTest extends Base
 
         // https://www.yahoo.co.jp/ にリダイレクトされていないこと
         $this->assertEquals('https://m.yahoo.co.jp/', $driver->getCurrentURL());
-
-        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox');
-
-        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_sp_firefox_fullscreen');
     }
 
     /**
@@ -141,11 +127,6 @@ class SampleTest extends Base
         $driver->get('https://www.yahoo.co.jp/');
 
         $this->assertEquals('https://www.yahoo.co.jp/', $driver->getCurrentURL());
-
-        // IEは $driver->takeScreenshot($filename); で全画面キャプチャをとってくれる
-        $this->takeScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie');
-
-        $this->takeFullScreenshot($driver, 'it_can_access_to_yahoo_of_pc_ie_fullscreen');
     }
 
     /**
@@ -186,6 +167,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
+        $driver->wait(10)->until(
+            WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
+                WebDriverBy::cssSelector('.rc')
+            )
+        );
+
         $selector  = '.rc';
         $selector2 = '.brs_col';
 
@@ -203,6 +190,8 @@ class SampleTest extends Base
         foreach ($targetCaptureFiles as $file) {
             $this->assertFileExists($file);
         }
+
+        $this->deleteImageFiles($targetCaptureFiles);
     }
 
     /**
@@ -245,6 +234,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
+        $driver->wait(10)->until(
+            WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
+                WebDriverBy::cssSelector('.uUPGi')
+            )
+        );
+
         $selector  = '.uUPGi';
         $selector2 = '#sfcnt';
 
@@ -262,6 +257,8 @@ class SampleTest extends Base
         foreach ($targetCaptureFiles as $file) {
             $this->assertFileExists($file);
         }
+
+        $this->deleteImageFiles($targetCaptureFiles);
     }
 
     /**
@@ -302,6 +299,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
+        $driver->wait(10)->until(
+            WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
+                WebDriverBy::cssSelector('.rc')
+            )
+        );
+
         $selector  = '.rc';
         $selector2 = '.brs_col';
 
@@ -319,6 +322,8 @@ class SampleTest extends Base
         foreach ($targetCaptureFiles as $file) {
             $this->assertFileExists($file);
         }
+
+        $this->deleteImageFiles($targetCaptureFiles);
     }
 
     /**
@@ -361,6 +366,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
+        $driver->wait(10)->until(
+            WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
+                WebDriverBy::cssSelector('.uUPGi')
+            )
+        );
+
         $selector  = '.uUPGi';
         $selector2 = '#sfcnt';
 
@@ -378,6 +389,8 @@ class SampleTest extends Base
         foreach ($targetCaptureFiles as $file) {
             $this->assertFileExists($file);
         }
+
+        $this->deleteImageFiles($targetCaptureFiles);
     }
 
     /**
@@ -418,6 +431,12 @@ class SampleTest extends Base
         // 検索実行
         $findElement->submit();
 
+        $driver->wait(10)->until(
+            WebDriverExpectedCondition::presenceOfAllElementsLocatedBy(
+                WebDriverBy::cssSelector('.rc')
+            )
+        );
+
         $selector  = '.rc';
         $selector2 = '.brs_col';
 
@@ -435,6 +454,8 @@ class SampleTest extends Base
         foreach ($targetCaptureFiles as $file) {
             $this->assertFileExists($file);
         }
+
+        $this->deleteImageFiles($targetCaptureFiles);
     }
 
     /**
