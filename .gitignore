@@ -2,6 +2,7 @@
 /vendor
 composer.lock
 /capture
+/tests/capture
 selenium-server-standalone*
 *.exe
 .env
