@@ -62,30 +62,30 @@ class Observer implements Observable
     }
 
     /**
-     * 画面の切り替えが行われたときに行う処理
+     * 画面スクロールが行われたときに行う処理
      * @var \Closure
      */
-    private $_processForScreenSwitching;
+    private $_processForScreenScroll;
 
     /**
-     * 画面の切り替えが行われたときに行う処理をセット
+     * 画面スクロールが行われたときに行う処理をセット
      * @param \Closure $func
      */
-    public function processForScreenSwitching(\Closure $func)
+    public function processForScreenScroll(\Closure $func)
     {
-        $this->_processForScreenSwitching = $func;
+        $this->_processForScreenScroll = $func;
     }
 
     /**
-     * clear processForScreenSwitching
+     * clear processForScreenScroll
      */
-    public function clearProcessForScreenSwitching()
+    public function clearProcessForScreenScroll()
     {
-        $this->_processForScreenSwitching = null;
+        $this->_processForScreenScroll = null;
     }
 
     /**
-     * 画面の切り替えが行われたときに行う処理
+     * 画面スクロールが行われたときに行う処理
      * 
      * @param RemoteWebDriver $driver
      * @param int $contentsWidth  実際のコンテンツ横幅
@@ -93,18 +93,18 @@ class Observer implements Observable
      * @param int $scrolledWidth  現在スクロール済みの横幅
      * @param int $scrolledHeight 現在スクロール済みの縦幅
      */
-    public function notifyScreenSwitching(
+    public function notifyScreenScroll(
         RemoteWebDriver $driver,
         $contentsWidth,
         $contentsHeight,
         $scrolledWidth,
         $scrolledHeight
     ) {
-        if ($this->_processForScreenSwitching === null) {
+        if ($this->_processForScreenScroll === null) {
             return;
         }
 
-        call_user_func_array($this->_processForScreenSwitching, [
+        call_user_func_array($this->_processForScreenScroll, [
             $driver,
             $contentsWidth,
             $contentsHeight,

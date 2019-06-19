@@ -7,10 +7,10 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
 /**
  * Interface of Observer
  * 
- * |   view    |<br>
- * |1.|2.|2.|3.|<br>
- * |4.|2.|2.|2.|<br>
- * |5.|2.|2.|6.|
+ * |  view  |<br>
+ * |1.|2.|3.|<br>
+ * |4.|2.|2.|<br>
+ * |5.|2.|6.|
  * 
  * |1.|<br>
  * |4.|<br>
@@ -42,8 +42,8 @@ interface Observable
     );
 
     /**
-     * 2. 画面の切り替えを通知
-     * Notify screen switching.
+     * 2. 画面スクロールを通知
+     * Notify screen scroll.
      * 
      * @param RemoteWebDriver $driver
      * @param int $contentsWidth  実際のコンテンツ横幅
@@ -51,7 +51,7 @@ interface Observable
      * @param int $scrolledWidth  現在スクロール済みの横幅
      * @param int $scrolledHeight 現在スクロール済みの縦幅
      */
-    public function notifyScreenSwitching(
+    public function notifyScreenScroll(
         RemoteWebDriver $driver,
         $contentsWidth,
         $contentsHeight,
