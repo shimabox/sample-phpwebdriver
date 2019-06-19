@@ -12,6 +12,8 @@ use Facebook\WebDriver\Chrome;
 use Facebook\WebDriver\Firefox;
 
 use SMB\PhpWebDriver\Modules\Screenshot;
+use SMB\PhpWebDriver\Modules\Elements\Spec;
+use SMB\PhpWebDriver\Modules\Elements\SpecPool;
 use SMB\PhpWebDriver\Modules\View\Observer;
 
 /**
@@ -103,13 +105,24 @@ function sample_7($browser, array $size=[], $overrideUA = '')
     $observer->processForFirstVerticalScroll(function($driver) {
         $driver->executeScript("document.querySelector('#searchform') ? document.querySelector('#searchform').style.display = 'none' : null;");
     });
+    // レンダリングが完了したら元に戻す
+    $observer->processForRenderComplete(function($driver,$contentsWidth, $contentsHeight, $scrollWidth, $scrollHeight) {
+        $driver->executeScript("document.querySelector('#searchform') ? document.querySelector('#searchform').style.display = 'inherit' : null;");
+    });
 
     $screenshot = new Screenshot();
 
     // オブザーバーをセット
     $screenshot->setObserver($observer);
 
+    // フルスクリーン
     $screenshot->takeFull($driver, $captureDirectoryPath, $fileName);
+
+    $selector = $overrideUA === '' ? '.RNNXgb' : '#sfcnt';
+    $spec = new Spec($selector, Spec::EQUAL, 1);
+    $specPool = (new SpecPool())->addSpec($spec);
+    // 要素のキャプチャ
+    $screenshot->takeElement($driver, $captureDirectoryPath, $fileName, $specPool);
 
     // ブラウザを閉じる
     $driver->close();

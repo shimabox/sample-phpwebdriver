@@ -18,7 +18,7 @@ use Facebook\WebDriver\Remote\RemoteWebDriver;
  * |6.|
  * 
  * Notification priority.<br>
- * 1. > 6. > 3. > 4. > 5. > 2.
+ * 1. > 6. > 3. > 4. > 5. > 2. > 7.
  * 
  */
 interface Observable
@@ -124,6 +124,24 @@ interface Observable
      * @param int $scrolledHeight 現在スクロール済みの縦幅
      */
     public function notifyLastRender(
+        RemoteWebDriver $driver,
+        $contentsWidth,
+        $contentsHeight,
+        $scrolledWidth,
+        $scrolledHeight
+    );
+
+    /**
+     * 7. 画面の描画が完了したことを通知
+     * Notify that screen drawing is complete.
+     * 
+     * @param RemoteWebDriver $driver
+     * @param int $contentsWidth  実際のコンテンツ横幅
+     * @param int $contentsHeight 実際のコンテンツ縦幅
+     * @param int $scrolledWidth  現在スクロール済みの横幅
+     * @param int $scrolledHeight 現在スクロール済みの縦幅
+     */
+    public function notifyRenderComplete(
         RemoteWebDriver $driver,
         $contentsWidth,
         $contentsHeight,
