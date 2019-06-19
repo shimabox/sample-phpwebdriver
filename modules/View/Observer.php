@@ -293,7 +293,7 @@ class Observer implements Observable
     }
 
     /**
-     * 5. 最後の画面が描画されるときに行う処理
+     * 最後の画面が描画されるときに行う処理
      * 
      * @param RemoteWebDriver $driver
      * @param int $contentsWidth  実際のコンテンツ横幅
@@ -313,6 +313,58 @@ class Observer implements Observable
         }
 
         call_user_func_array($this->_processForLastRender, [
+            $driver,
+            $contentsWidth,
+            $contentsHeight,
+            $scrolledWidth,
+            $scrolledHeight
+        ]);
+    }
+
+    /**
+     * 画面の描画が完了したときに行う処理
+     * @var \Closure
+     */
+    private $_processForRenderComplete;
+
+    /**
+     * 画面の描画が完了したときに行う処理をセット
+     * @param \Closure $func
+     */
+    public function processForRenderComplete(\Closure $func)
+    {
+        $this->_processForRenderComplete = $func;
+    }
+
+    /**
+     * clear processForRenderComplete
+     */
+    public function clearProcessForRenderComplete()
+    {
+        $this->_processForRenderComplete = null;
+    }
+
+    /**
+     * 画面の描画が完了したときに行う処理
+     * 
+     * @param RemoteWebDriver $driver
+     * @param int $contentsWidth  実際のコンテンツ横幅
+     * @param int $contentsHeight 実際のコンテンツ縦幅
+     * @param int $scrolledWidth  現在スクロール済みの横幅
+     * @param int $scrolledHeight 現在スクロール済みの縦幅
+     */
+    public function notifyRenderComplete(
+        RemoteWebDriver $driver,
+        $contentsWidth,
+        $contentsHeight,
+        $scrolledWidth,
+        $scrolledHeight
+    ) {
+        if ($this->_processForRenderComplete === null) {
+            return;
+        }
+
+        call_user_func_array($this->_processForRenderComplete, [
             $driver,
             $contentsWidth,
             $contentsHeight,

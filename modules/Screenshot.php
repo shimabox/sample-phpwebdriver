@@ -217,6 +217,15 @@ class Screenshot
 
         $this->destroyImage($imgFrame);
 
+        // キャプチャを撮り終えたらスクロールを戻しておく
+        // takeElementから呼ばれた場合にスティッキー(固定)ヘッダーなどの要素が指定されていると
+        // 一番下までスクロールされた状態で要素の座標が計算されてしまい意図したキャプチャが撮れない
+        $driver->executeScript(sprintf("window.scrollTo(%d, %d);", 0, 0));
+
+        if ($this->observer !== null) {
+            $this->observer->notifyRenderComplete($driver, $contentsWidth, $contentsHeight, $scrollWidth, $scrollHeight);
+        }
+
         return $captureFile;
     }
 
