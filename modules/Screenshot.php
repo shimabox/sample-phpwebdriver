@@ -392,7 +392,7 @@ class Screenshot
         }
 
         if ($scrollWidth > 0 || $scrollHeight > 0) {
-            $this->observer->notifyScreenSwitching($driver, $contentsWidth, $contentsHeight, $scrollWidth, $scrollHeight);
+            $this->observer->notifyScreenScroll($driver, $contentsWidth, $contentsHeight, $scrollWidth, $scrollHeight);
             return;
         }
     }
