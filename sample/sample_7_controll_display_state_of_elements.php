@@ -106,7 +106,7 @@ function sample_7($browser, array $size=[], $overrideUA = '')
         $driver->executeScript("document.querySelector('#searchform') ? document.querySelector('#searchform').style.display = 'none' : null;");
     });
     // レンダリングが完了したら元に戻す
-    $observer->processForRenderComplete(function($driver,$contentsWidth, $contentsHeight, $scrollWidth, $scrollHeight) {
+    $observer->processForRenderComplete(function($driver) {
         $driver->executeScript("document.querySelector('#searchform') ? document.querySelector('#searchform').style.display = 'inherit' : null;");
     });
 
