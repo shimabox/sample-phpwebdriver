@@ -27,7 +27,7 @@ Download selenium-server-standalone, ChromeDriver, geckodriver, IEDriverServer e
 |Platform|selenium-server-standalone|ChromeDriver|geckodriver|IEDriverServer|
 |:---|:---|:---|:---|:---|
 |Mac|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_mac64.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-macos.tar.gz)|-|
-|Windows(64bit)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_win32.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-win64.zip)|[3.14.0](https://selenium-release.storage.googleapis.com/3.14/IEDriverServer_Win32_3.14.0.zip)|
+|Windows(64bit)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_win32.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-win64.zip)|[3.141.59](https://selenium-release.storage.googleapis.com/3.141/IEDriverServer_Win32_3.141.59.zip)|
 |Linux(CentOS 6.9)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|-|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz)|-|
 |Linux(Ubuntu trusty)|[3.8.1](https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar)|[75.0.3770.90](https://chromedriver.storage.googleapis.com/75.0.3770.90/chromedriver_linux64.zip)|[0.24.0](https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz)|-|
 
@@ -39,7 +39,7 @@ $ php selenium_downloader.php -p m -d . -s 3.8.1 -c 75.0.3770.90 -g 0.24.0
 ```
 - e.g) For Windows.
 ```
-$ php selenium_downloader.php -p w -d . -s 3.8.1 -c 75.0.3770.90 -g 0.24.0 -i 3.14.0
+$ php selenium_downloader.php -p w -d . -s 3.8.1 -c 75.0.3770.90 -g 0.24.0 -i 3.141.59
 ```
 - e.g) For Linux.
 ```
@@ -176,8 +176,8 @@ $ vendor/bin/phpunit
 
 ### IEDriverServer.exe
 
-- [IEDriverServer_x64_3.14.0.zip](http://selenium-release.storage.googleapis.com/index.html?path=3.14/)
-  - http://selenium-release.storage.googleapis.com/3.14/IEDriverServer_x64_3.14.0.zip
+- [IEDriverServer_Win32_3.141.59.zip](http://selenium-release.storage.googleapis.com/index.html?path=3.141/)
+  - http://selenium-release.storage.googleapis.com/3.141/IEDriverServer_Win32_3.141.59.zip
 
 #### .env
 
